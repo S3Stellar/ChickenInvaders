@@ -51,11 +51,13 @@ public class PlayerShip {
         // Initialize the bitmap
         bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.spaceship);
 
+/*
         // stretch the bitmap to a size appropriate for the screen resolution
         bitmap = Bitmap.createScaledBitmap(bitmap,
                 (int) (length),
                 (int) (height),
                 false);
+*/
 
         // How fast is the paddle in pixels per second
         shipSpeed = 350;

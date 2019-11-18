@@ -71,10 +71,10 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
         paint = new Paint();
         screenX = x;
         screenY = y;
-        prepareLevel();
+        //prepareLevel();
     }
 
-    private void prepareLevel() {
+    /*private void prepareLevel() {
         // Here we will initialize all the game objects
 
         // Make a new player space ship
@@ -86,7 +86,7 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
             invaders[numInvaders] = new Invader(context, column, screenX, screenY);
             numInvaders++;
         }
-    }
+    }*/
 
 
     // If SpaceInvadersActivity is paused/stopped
@@ -129,7 +129,7 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
         // Did an invader bump into the edge of the screen
 
         if (lost) {
-            prepareLevel();
+            //prepareLevel();
         }
 
         // Update the players bullet
