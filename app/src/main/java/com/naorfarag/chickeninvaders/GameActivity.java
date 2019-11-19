@@ -1,11 +1,12 @@
 package com.naorfarag.chickeninvaders;
 
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 
+import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
@@ -13,12 +14,14 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.MotionEvent;
+import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.Toast;
+
+
+import java.util.ArrayList;
 
 
 public class GameActivity extends AppCompatActivity {
@@ -59,27 +62,36 @@ public class GameActivity extends AppCompatActivity {
     private int lives = 3;
 
     private ViewGroup mainLayout;
-    private ImageView image;
+    private ImageView spaceship;
 
     private float xDelta, yDelta;
+
+    private Paint paint;
+    private Canvas canvas;
+    private SurfaceHolder surfaceHolder;
+
+    //Adding an stars list
+    private ArrayList<Star> stars = new
+            ArrayList<Star>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
-        // Hide action bar
+        /** changed styles xml instead */
+        /*// Hide action bar
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowTitleEnabled(false);
         actionBar.hide();
-
         // Set up full screen
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        // Lock screen orientation
+*/        // Lock screen orientation
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         // Get username
         Intent intent = getIntent();
+
 
         // Get a Display object to access screen details
         Display display = getWindowManager().getDefaultDisplay();
@@ -90,8 +102,17 @@ public class GameActivity extends AppCompatActivity {
         size.y = screenY;
 
         mainLayout = (FrameLayout) findViewById(R.id.frameLayout);
-        image = findViewById(R.id.spaceship);
-        image.setOnTouchListener(onTouchListener());
+        spaceship = findViewById(R.id.spaceship);
+        spaceship.setOnTouchListener(onTouchListener());
+        //makeStars();
+    }
+
+    private void makeStars() {
+        int starNums = 100;
+        for (int i = 0; i < starNums; i++) {
+            Star s  = new Star(screenX, screenY);
+            stars.add(s);
+        }
     }
 
     // Option 1 free move no boundaries
@@ -163,7 +184,7 @@ public class GameActivity extends AppCompatActivity {
     }*/
 
 
-   // Option 3 free move/left right move with boundaries
+    // Option 3 free move/left right move with boundaries
     private View.OnTouchListener onTouchListener() {
         final DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
         // Display Rect Boundaries
@@ -186,23 +207,23 @@ public class GameActivity extends AppCompatActivity {
                         float x = motionEvent.getX();
                         float y = motionEvent.getY();
 
-                        image.offsetLeftAndRight((int) (x - offsetPoint.x));
+                        spaceship.offsetLeftAndRight((int) (x - offsetPoint.x));
 
                         // Disable to make it move left right only
-                        image.offsetTopAndBottom((int) (y - offsetPoint.y));
+                        spaceship.offsetTopAndBottom((int) (y - offsetPoint.y));
 
 
                         // check boundaries
-                        if (image.getRight() > parentRect.right) {
-                            image.offsetLeftAndRight(-(image.getRight() - parentRect.right));
-                        } else if (image.getLeft() < parentRect.left) {
-                            image.offsetLeftAndRight((parentRect.left - image.getLeft()));
+                        if (spaceship.getRight() > parentRect.right) {
+                            spaceship.offsetLeftAndRight(-(spaceship.getRight() - parentRect.right));
+                        } else if (spaceship.getLeft() < parentRect.left) {
+                            spaceship.offsetLeftAndRight((parentRect.left - spaceship.getLeft()));
                         }
 
-                        if (image.getBottom() > parentRect.bottom) {
-                            image.offsetTopAndBottom(-(image.getBottom() - parentRect.bottom));
-                        } else if (image.getTop() < parentRect.top) {
-                            image.offsetTopAndBottom((parentRect.top - image.getTop()));
+                        if (spaceship.getBottom() > parentRect.bottom) {
+                            spaceship.offsetTopAndBottom(-(spaceship.getBottom() - parentRect.bottom));
+                        } else if (spaceship.getTop() < parentRect.top) {
+                            spaceship.offsetTopAndBottom((parentRect.top - spaceship.getTop()));
                         }
 
                         break;

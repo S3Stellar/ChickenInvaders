@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">Chicken Invaders</string>
     <string name="startText">START</string>
-    <string name="nickname">Nickname . .</string>
+    <string name="nickname">Nickname . . .</string>
 </resources>
