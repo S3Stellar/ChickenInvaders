@@ -1,16 +1,93 @@
 package com.naorfarag.chickeninvaders;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import java.util.Random;
 import android.graphics.Rect;
 
+import java.util.Random;
 
 /**
  * Created by Manish on 10/24/2016.
  */
 
+public class Invader {
+
+    private Bitmap bitmap;
+    private int x;
+    private int y;
+    private int speed = 1;
+
+    private int maxX;
+    private int minX;
+
+    private int maxY;
+    private int minY;
+
+    //creating a rect object for a friendly ship
+    private Rect detectCollision;
+
+
+    public Invader(Context context, int screenX, int screenY) {
+        final TypedArray imgs = context.getResources().obtainTypedArray(R.array.apptour);
+        final Random rand = new Random();
+        final int rndInt = rand.nextInt(imgs.length());
+        final int resID = imgs.getResourceId(rndInt, 0);
+        bitmap = BitmapFactory.decodeResource(context.getResources(), resID);
+        maxX = screenX;
+        maxY = screenY;
+        minX = 0;
+        minY = 0;
+        Random generator = new Random();
+        speed = generator.nextInt(5) + 8;
+        y =0;
+        x = generator.nextInt(maxX) - bitmap.getWidth();
+
+        //initializing rect object
+        detectCollision = new Rect(x, y, bitmap.getWidth(), bitmap.getHeight());
+    }
+
+    public void update(int playerSpeed) {
+        x += playerSpeed;
+        y += speed;
+        if (y > maxY - bitmap.getHeight()) {
+            Random generator = new Random();
+            speed = generator.nextInt(10) + 10;
+            y = 0;
+            x = generator.nextInt(maxX) - bitmap.getWidth();
+        }
+
+        //Adding the top, left, bottom and right to the rect object
+        detectCollision.left = x;
+        detectCollision.top = y;
+        detectCollision.right = x + bitmap.getWidth();
+        detectCollision.bottom = y + bitmap.getHeight();
+    }
+
+
+
+    //one more getter for getting the rect object
+    public Rect getDetectCollision() {
+        return detectCollision;
+    }
+
+    //getters
+    public Bitmap getBitmap() {
+        return bitmap;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+}
+
+/*
 public class Invader {
 
     private Bitmap bitmap;
@@ -79,4 +156,4 @@ public class Invader {
         return y;
     }
 
-}
+}*/

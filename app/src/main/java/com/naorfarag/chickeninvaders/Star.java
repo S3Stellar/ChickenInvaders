@@ -2,9 +2,7 @@ package com.naorfarag.chickeninvaders;
 
 import java.util.Random;
 
-/**
- * Created by Belal on 6/15/2016.
- */
+
 public class Star {
     private int x;
     private int y;
@@ -14,7 +12,6 @@ public class Star {
     private int maxY;
     private int minX;
     private int minY;
-
 
 
     public Star(int screenX, int screenY) {
@@ -34,8 +31,8 @@ public class Star {
     public void update(int playerSpeed) {
         //animating the star horizontally left side
         //by decreasing x coordinate with player speed
-        y -= playerSpeed;
-        y -= speed;
+        y += playerSpeed;
+        y += speed;
         //if the star reached the left edge of the screen
         if (y > maxY) {
             //again starting the star from right edge

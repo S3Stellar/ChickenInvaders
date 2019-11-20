@@ -26,165 +26,47 @@ import java.util.ArrayList;
 
 public class GameActivity extends AppCompatActivity {
 
-
-    private Context context;
-
-    // This is our thread
-    private Thread gameThread = null;
-
-    // A boolean which we will set and unset
-    // when the game is running- or not.
-    private volatile boolean playing;
-
-    // Game is paused at the start
-    private boolean paused = true;
-
-    // This variable tracks the game frame rate
-    private long fps;
-
-    // This is used to help calculate the fps
-    private long timeThisFrame;
-
-    // The size of the screen in pixels
-    private int screenX;
-    private int screenY;
-
-    // The players ship
-    private PlayerShip playerShip;
-
-    // Up to 60 invaders
-    private Invader[] invaders = new Invader[60];
-    private int numInvaders = 0;
-
-    private int score = 0;
-
-    // Lives
-    private int lives = 3;
-
-    private ViewGroup mainLayout;
-    private ImageView spaceship;
-
-    private float xDelta, yDelta;
-
-    private Paint paint;
-    private Canvas canvas;
-    private SurfaceHolder surfaceHolder;
-
-    //Adding an stars list
-    private ArrayList<Star> stars = new
-            ArrayList<Star>();
-
+    //private ImageView spaceship;
+    private ChickenInvadersView chickenInvadersView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
-        /** changed styles xml instead */
-        /*// Hide action bar
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayShowTitleEnabled(false);
-        actionBar.hide();
-        // Set up full screen
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-*/        // Lock screen orientation
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
         // Get username
         Intent intent = getIntent();
-
 
         // Get a Display object to access screen details
         Display display = getWindowManager().getDefaultDisplay();
         // Load the resolution into a Point object
         Point size = new Point();
         display.getSize(size);
-        size.x = screenX;
-        size.y = screenY;
 
-        mainLayout = (FrameLayout) findViewById(R.id.frameLayout);
-        spaceship = findViewById(R.id.spaceship);
-        spaceship.setOnTouchListener(onTouchListener());
-        //makeStars();
-    }
-
-    private void makeStars() {
-        int starNums = 100;
-        for (int i = 0; i < starNums; i++) {
-            Star s  = new Star(screenX, screenY);
-            stars.add(s);
+        chickenInvadersView = new ChickenInvadersView(this, size.x,size.y);
+        if(chickenInvadersView.getParent() != null) {
+            ((ViewGroup)chickenInvadersView.getParent()).removeView(chickenInvadersView); // <- fix
         }
+        setContentView(chickenInvadersView);
+  /*      spaceship = findViewById(R.id.spaceship);
+        spaceship.setOnTouchListener(onTouchListener());*/
     }
 
-    // Option 1 free move no boundaries
-    /*private View.OnTouchListener onTouchListener() {
-        return new View.OnTouchListener() {
 
-            @Override
-            public boolean onTouch(View view, MotionEvent event) {
+    //pausing the game when activity is paused
+    @Override
+    protected void onPause() {
+        super.onPause();
+        chickenInvadersView.pause();
+    }
 
-                switch (event.getAction()) {
+    //running the game when activity is resumed
+    @Override
+    protected void onResume() {
+        super.onResume();
+        chickenInvadersView.resume();
+    }
 
-                    case MotionEvent.ACTION_DOWN:
-
-                        xDelta = view.getX() - event.getRawX();
-                        yDelta = view.getY() - event.getRawY();
-                        break;
-
-                    case MotionEvent.ACTION_MOVE:
-
-                        view.animate()
-                                .x(event.getRawX() + xDelta)
-                                .y(event.getRawY() + yDelta)
-                                .setDuration(0)
-                                .start();
-                        break;
-                    default:
-                        return false;
-                }
-                return true;
-            }
-        };
-    }*/
-
-    // Option 2 only bottom no boundaries
-   /* private View.OnTouchListener onTouchListener() {
-        return new View.OnTouchListener() {
-
-            @Override
-            public boolean onTouch(View view, MotionEvent event) {
-
-                final int x = (int) event.getRawX();
-                final int y = (int) event.getRawY();
-
-                switch (event.getAction() & MotionEvent.ACTION_MASK) {
-
-                    case MotionEvent.ACTION_DOWN:
-                        FrameLayout.LayoutParams lParams = (FrameLayout.LayoutParams)
-                                view.getLayoutParams();
-
-                        xDelta = x - lParams.leftMargin;
-                        yDelta = y - lParams.topMargin;
-                        break;
-
-                    case MotionEvent.ACTION_MOVE:
-                        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) view
-                                .getLayoutParams();
-
-                        layoutParams.leftMargin = (int) (x - xDelta);
-                        layoutParams.topMargin = (int) (y - yDelta);
-                        layoutParams.rightMargin = 0;
-                        //layoutParams.bottomMargin = 0;
-                        view.setLayoutParams(layoutParams);
-                        break;
-                }
-                mainLayout.invalidate();
-                return true;
-            }
-        };
-    }*/
-
-
-    // Option 3 free move/left right move with boundaries
+    /*// Option 3 free move/left right move with boundaries
     private View.OnTouchListener onTouchListener() {
         final DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
         // Display Rect Boundaries
@@ -231,6 +113,6 @@ public class GameActivity extends AppCompatActivity {
                 return true;
             }
         };
-    }
+    }*/
 }
 
