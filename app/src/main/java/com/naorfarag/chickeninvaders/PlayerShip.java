@@ -3,27 +3,20 @@ package com.naorfarag.chickeninvaders;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.RectF;
+import android.graphics.Rect;
 
 public class PlayerShip {
-
-    RectF rect;
-
-    // The player ship will be represented by a Bitmap
     private Bitmap bitmap;
+    private int x;
+    private int y;
 
-    // How long and high our paddle will be
-    private float length;
-    private float height;
-
-    // X is the far left of the rectangle which forms our paddle
-    private float x;
-
-    // Y is the top coordinate
-    private float y;
+    private int maxY;
+    private int minY;
+    private int maxX;
+    private int minX;
 
     // This will hold the pixels per second speedthat the paddle will move
-    private float shipSpeed;
+    private int shipSpeed;
 
     // Which ways can the paddle move
     public final int STOPPED = 0;
@@ -33,52 +26,23 @@ public class PlayerShip {
     // Is the ship moving and in which direction
     private int shipMoving = STOPPED;
 
-    // This the the constructor method
-    // When we create an object from this class we will pass
-    // in the screen width and height
-    public PlayerShip(Context context, int screenX, int screenY){
+    private Rect detectCollision;
 
-        // Initialize a blank RectF
-        rect = new RectF();
+    public PlayerShip(Context context, int screenX, int screenY) {
+        x = screenX / 2 - 100;
+        y = screenY - 400;
 
-        length = screenX/10;
-        height = screenY/10;
-
-        // Start ship in roughly the screen centre
-        x = screenX / 2;
-        y = screenY - 20;
-
-        // Initialize the bitmap
         bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.spaceship);
 
-/*
-        // stretch the bitmap to a size appropriate for the screen resolution
-        bitmap = Bitmap.createScaledBitmap(bitmap,
-                (int) (length),
-                (int) (height),
-                false);
-*/
+        maxY = screenY - bitmap.getHeight();
+        minY = 0;
+        maxX = screenX - bitmap.getWidth();
+        minX = 0;
 
+        //initializing rect object
+        detectCollision = new Rect(x, y, bitmap.getWidth(), bitmap.getHeight());
         // How fast is the paddle in pixels per second
-        shipSpeed = 350;
-    }
-
-    public RectF getRect(){
-        return rect;
-    }
-
-    // This is a getter method to make the rectangle that
-    // defines our paddle available in BreakoutView class
-    public Bitmap getBitmap(){
-        return bitmap;
-    }
-
-    public float getX(){
-        return x;
-    }
-
-    public float getLength(){
-        return length;
+        shipSpeed = 1000;
     }
 
     // This method will be used to change/set if the paddle is going left, right or nowhere
@@ -86,23 +50,51 @@ public class PlayerShip {
         shipMoving = state;
     }
 
-    // This update method will be called from update in SpaceInvadersView
-    // It determines if the player ship needs to move and changes the coordinates
-    // contained in x if necessary
-    public void update(long fps){
-        if(shipMoving == LEFT){
-            x = x - shipSpeed / fps;
+    public void update(long fps) {
+        if (shipMoving == LEFT)
+            x = (int)(x - shipSpeed/fps);
+
+
+        if (shipMoving == RIGHT)
+            x = (int)(x + shipSpeed/fps);
+
+        if (y > maxY) {
+            y = maxY;
+        }
+        if(x>maxX){
+            x=maxX;
+        }
+        if(x<minX){
+            x=minX;
         }
 
-        if(shipMoving == RIGHT){
-            x = x + shipSpeed / fps;
-        }
 
-        // Update rect which is used to detect hits
-        rect.top = y;
-        rect.bottom = y + height;
-        rect.left = x;
-        rect.right = x + length;
+        //adding top, left, bottom and right to the rect object
+        detectCollision.left = x+40;
+        detectCollision.top = y + 50;
+        detectCollision.right = x + bitmap.getWidth() - 40;
+        detectCollision.bottom = y + bitmap.getHeight() - 70;
 
+    }
+
+    //one more getter for getting the rect object
+    public Rect getDetectCollision() {
+        return detectCollision;
+    }
+
+    public Bitmap getBitmap() {
+        return bitmap;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public int getSpeed() {
+        return shipSpeed;
     }
 }
