@@ -42,7 +42,7 @@ public class PlayerShip {
         //initializing rect object
         detectCollision = new Rect(x, y, bitmap.getWidth(), bitmap.getHeight());
         // How fast is the paddle in pixels per second
-        shipSpeed = 650;
+        shipSpeed = 1000;
     }
 
     // This method will be used to change/set if the paddle is going left, right or nowhere
@@ -51,13 +51,12 @@ public class PlayerShip {
     }
 
     public void update(long fps) {
-        if (shipMoving == LEFT) {
+        if (shipMoving == LEFT)
             x = (int)(x - shipSpeed/fps);
-        }
 
-        if (shipMoving == RIGHT) {
+
+        if (shipMoving == RIGHT)
             x = (int)(x + shipSpeed/fps);
-        }
 
         if (y > maxY) {
             y = maxY;
@@ -69,10 +68,11 @@ public class PlayerShip {
             x=minX;
         }
 
+
         //adding top, left, bottom and right to the rect object
-        detectCollision.left = x - 70;
+        detectCollision.left = x+40;
         detectCollision.top = y + 50;
-        detectCollision.right = x + bitmap.getWidth() - 70;
+        detectCollision.right = x + bitmap.getWidth() - 40;
         detectCollision.bottom = y + bitmap.getHeight() - 70;
 
     }

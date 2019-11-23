@@ -8,9 +8,6 @@ import android.graphics.Rect;
 
 import java.util.Random;
 
-/**
- * Created by Manish on 10/24/2016.
- */
 
 public class Invader {
 
@@ -28,13 +25,14 @@ public class Invader {
     //creating a rect object for a friendly ship
     private Rect detectCollision;
 
+    private Random rand = new Random();
+    private TypedArray chicken_images;
+    private Context context;
 
     public Invader(Context context, int screenX, int screenY) {
-        final TypedArray imgs = context.getResources().obtainTypedArray(R.array.apptour);
-        final Random rand = new Random();
-        final int rndInt = rand.nextInt(imgs.length());
-        final int resID = imgs.getResourceId(rndInt, 0);
-        bitmap = BitmapFactory.decodeResource(context.getResources(), resID);
+        this.context = context;
+        chicken_images = context.getResources().obtainTypedArray(R.array.apptour);
+        changeChickenImage();
         maxX = screenX;
         maxY = screenY;
         minX = 0;
@@ -42,27 +40,33 @@ public class Invader {
         Random generator = new Random();
         speed = generator.nextInt(5) + 8;
         y =0;
-        x = generator.nextInt(maxX) - bitmap.getWidth();
+        x = x = rand.nextInt(maxX-bitmap.getWidth()) + bitmap.getWidth()/10;
 
         //initializing rect object
         detectCollision = new Rect(x, y, bitmap.getWidth(), bitmap.getHeight());
     }
 
+    private void changeChickenImage() {
+        final int rndInt = rand.nextInt(chicken_images.length());
+        final int resID = chicken_images.getResourceId(rndInt, 0);
+        bitmap = BitmapFactory.decodeResource(context.getResources(), resID);
+    }
+
     public void update(int playerSpeed) {
-        x += playerSpeed;
+        y += playerSpeed;
         y += speed;
         if (y > maxY - bitmap.getHeight()) {
-            Random generator = new Random();
-            speed = generator.nextInt(10) + 10;
+            changeChickenImage();
+            speed = rand.nextInt(10) + 10;
             y = 0;
-            x = generator.nextInt(maxX) - bitmap.getWidth();
+            x = rand.nextInt(maxX-bitmap.getWidth()) + bitmap.getWidth()/10;
         }
 
         //Adding the top, left, bottom and right to the rect object
         detectCollision.left = x;
-        detectCollision.top = y;
-        detectCollision.right = x + bitmap.getWidth();
-        detectCollision.bottom = y + bitmap.getHeight();
+        detectCollision.top = y+bitmap.getHeight()/4;
+        detectCollision.right = x + bitmap.getWidth()/(1+1/3);
+        detectCollision.bottom = y + bitmap.getHeight()/2;
     }
 
 
@@ -85,6 +89,9 @@ public class Invader {
         return y;
     }
 
+    public void setY(int y) {
+        this.y = y;
+    }
 }
 
 /*

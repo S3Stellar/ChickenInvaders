@@ -101,10 +101,10 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
         while (playing) {
 
             for (Star s : stars) {
-                s.update(new Random().nextInt(5) + 1);
+                s.update(new Random().nextInt(5) + 1+score/10);
             }
             for (Invader e : enemies) {
-                e.update(new Random().nextInt(4) + 1);
+                e.update(new Random().nextInt(4) + 1+score/10);
             }
             // Capture the current time in milliseconds in startFrameTime
             long startFrameTime = System.currentTimeMillis();
@@ -120,9 +120,8 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
             // We can then use the result to
             // time animations and more.
             timeThisFrame = System.currentTimeMillis() - startFrameTime;
-            if (timeThisFrame >= 1) {
+            if (timeThisFrame >= 1)
                 fps = 1000 / timeThisFrame;
-            }
             //control(); // might remove
         }
     }
@@ -149,7 +148,7 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
         boom.setY(-650);
 
         for (int i = 0; i < enemyCount; i++) {
-            //enemies[i].update(player.getSpeed());
+           // enemies[i].update(player.getSpeed());
 
             //if collision occurrs with player
             if (Rect.intersects(player.getDetectCollision(), enemies[i].getDetectCollision())) {
@@ -158,7 +157,7 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
                 boom.setX(enemies[i].getX());
                 boom.setY(enemies[i].getY());
 
-                //enemies[i].setX(-200);
+                enemies[i].setY(screenY+enemies[i].getBitmap().getHeight());
 
             }
         }
@@ -183,20 +182,15 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
                     paint);
             Bitmap resized = Bitmap.createScaledBitmap(heart, 50, 50, true);
 
-            canvas.drawBitmap(resized, screenX - 165, 15, paint);
-            canvas.drawBitmap(resized, screenX - 110, 15, paint);
-            canvas.drawBitmap(resized, screenX - 55, 15, paint);
+            //draw hearts
+            for (int i = 0; i < lives; i++) {
+                canvas.drawBitmap(resized, screenX - 55*(i+1), 15, paint);
+            }
+            // draw score
             paint.setColor(Color.argb(255, 249, 129, 0));
             paint.setTextSize(40);
             canvas.drawText("Score: " + score, 10, 50, paint);
-         /*   int delay = 5000; // delay for 5 sec.
-            int period = 1000; // repeat every sec.
-            Timer timer = new Timer();
-            timer.scheduleAtFixedRate(new TimerTask() {
-                public void run() {
-                    score++;
-                }
-            }, delay, period);*/
+
             for (int i = 0; i < enemyCount; i++) {
                 canvas.drawBitmap(
                         enemies[i].getBitmap(),
@@ -207,12 +201,12 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
             }
 
             //drawing boom image
-            /*canvas.drawBitmap(
+            canvas.drawBitmap(
                     boom.getBitmap(),
                     boom.getX(),
                     boom.getY(),
                     paint
-            );*/
+            );
 
             surfaceHolder.unlockCanvasAndPost(canvas);
 
@@ -256,9 +250,7 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
 
             // Player has removed finger from screen
             case MotionEvent.ACTION_UP:
-                paused = true;
-                if (motionEvent.getY() > screenY - screenY / 10)
-                    player.setMovementState(player.STOPPED);
+                player.setMovementState(player.STOPPED);
                 break;
         }
         return true;
@@ -269,7 +261,9 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (++score < 9999) {
+                if (score < 9999) {
+                    if(!paused&&lives>0)
+                        score++;
                     handler.postDelayed(this, 1000L);
                     return;
                 }
