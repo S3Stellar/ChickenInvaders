@@ -91,10 +91,10 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
         while (playing) {
 
             for (Star s : stars) {
-                s.update(new Random().nextInt(5) + 1+score/10);
+                s.update(new Random().nextInt(5) + 1 + score / 10);
             }
             for (Invader e : enemies) {
-                e.update(new Random().nextInt(4) + 1+score/10);
+                e.update(new Random().nextInt(4) + 1 + score / 10);
             }
             // Capture the current time in milliseconds in startFrameTime
             long startFrameTime = System.currentTimeMillis();
@@ -145,7 +145,7 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
                 boom.setX(enemies[i].getX());
                 boom.setY(enemies[i].getY());
 
-                enemies[i].setY(screenY+enemies[i].getBitmap().getHeight());
+                enemies[i].setY(screenY + enemies[i].getBitmap().getHeight());
 
             }
         }
@@ -175,7 +175,7 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
 
             //draw hearts
             for (int i = 0; i < lives; i++) {
-                canvas.drawBitmap(resized, screenX - 55*(i+1), 15, paint);
+                canvas.drawBitmap(resized, screenX - 55 * (i + 1), 15, paint);
             }
 
             // draw score
@@ -230,20 +230,26 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
 
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
-        switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) {
+        // get pointer index from the event object
+        int pointerIndex = motionEvent.getActionIndex();
+        // get masked (not specific to a pointer) action
+        int maskedAction = motionEvent.getActionMasked();
+        switch (maskedAction) {
+            // Player has removed finger from screen
+            case MotionEvent.ACTION_UP:
+                player.setMovementState(player.STOPPED);
+                break;
+
             // Player has touched the screen
             case MotionEvent.ACTION_DOWN:
+            case MotionEvent.ACTION_POINTER_DOWN:
                 paused = false;
-                if (motionEvent.getX() > screenX / 2)
+                if (motionEvent.getX(pointerIndex) > screenX / 2)
                     player.setMovementState(player.RIGHT);
                 else
                     player.setMovementState(player.LEFT);
                 break;
 
-            // Player has removed finger from screen
-            case MotionEvent.ACTION_UP:
-                player.setMovementState(player.STOPPED);
-                break;
         }
         return true;
     }
@@ -254,7 +260,7 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
             @Override
             public void run() {
                 if (score < 9999) {
-                    if(!paused&&lives>0)
+                    if (!paused && lives > 0)
                         score++;
                     handler.postDelayed(this, 1000L);
                     return;
