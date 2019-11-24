@@ -5,13 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-
     tools:context=".LoginActivity">
 
     <ImageView
         android:id="@+id/imageView2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:contentDescription="@string/background_image"
         android:scaleType="fitXY"
         app:srcCompat="@drawable/chickenlogin" />
 
@@ -30,8 +30,9 @@
             android:layout_marginBottom="10dp"
             android:background="@null"
             android:gravity="center"
+            android:hapticFeedbackEnabled="true"
             android:hint="@string/nickname"
-            android:textColorHint="#919389"
+            android:importantForAutofill="no"
             android:inputType="textPersonName"
             android:maxLength="22"
             android:shadowColor="#0166F3"
@@ -39,13 +40,14 @@
             android:shadowDy="0"
             android:shadowRadius="4"
             android:textColor="#D5D6D5"
+            android:textColorHint="#919389"
             android:textSize="30sp" />
 
         <Button
             android:id="@+id/startButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="45dp"
             android:backgroundTint="#362F4BFA"
             android:onClick="onStart"
             android:text="@string/startText"

@@ -1,27 +1,14 @@
 package com.naorfarag.chickeninvaders;
 
 
-import androidx.appcompat.app.AppCompatActivity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.Point;
-import android.graphics.PointF;
-import android.graphics.Rect;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.view.Display;
-import android.view.MotionEvent;
-import android.view.SurfaceHolder;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 
-
-import java.util.ArrayList;
+import androidx.appcompat.app.AppCompatActivity;
 
 
 public class GameActivity extends AppCompatActivity {
@@ -31,7 +18,7 @@ public class GameActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_game);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         // Get username
         Intent intent = getIntent();
@@ -43,9 +30,9 @@ public class GameActivity extends AppCompatActivity {
         display.getSize(size);
 
         chickenInvadersView = new ChickenInvadersView(this, size.x,size.y);
-        if(chickenInvadersView.getParent() != null) {
+        /*if(chickenInvadersView.getParent() != null) {
             ((ViewGroup)chickenInvadersView.getParent()).removeView(chickenInvadersView); // <- fix
-        }
+        }*/
         setContentView(chickenInvadersView);
   /*      spaceship = findViewById(R.id.spaceship);
         spaceship.setOnTouchListener(onTouchListener());*/
@@ -64,6 +51,20 @@ public class GameActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         chickenInvadersView.resume();
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        }
     }
 
     /*// Option 3 free move/left right move with boundaries

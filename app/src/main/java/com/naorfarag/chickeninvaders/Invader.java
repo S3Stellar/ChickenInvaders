@@ -40,7 +40,7 @@ public class Invader {
         Random generator = new Random();
         speed = generator.nextInt(5) + 8;
         y =0;
-        x = x = rand.nextInt(maxX-bitmap.getWidth()) + bitmap.getWidth()/10;
+        x = rand.nextInt(maxX-bitmap.getWidth()) + bitmap.getWidth()/10;
 
         //initializing rect object
         detectCollision = new Rect(x, y, bitmap.getWidth(), bitmap.getHeight());

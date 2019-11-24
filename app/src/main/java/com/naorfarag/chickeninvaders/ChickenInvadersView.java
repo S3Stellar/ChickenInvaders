@@ -6,32 +6,15 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PixelFormat;
-import android.graphics.PointF;
-import android.media.SoundPool;
-import android.os.Handler;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.MotionEvent;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
-
-
-import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Rect;
+import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.View;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class ChickenInvadersView extends SurfaceView implements Runnable {
 
@@ -67,8 +50,12 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
             ArrayList<Star>();
     private Bitmap heart;
     private ImageView img;
+
     //defining a boom object to display blast
     private Boom boom;
+
+    private Bitmap bg;
+    Bitmap bgResized;
 
     public ChickenInvadersView(Context context, int screenX, int screenY) {
         super(context);
@@ -93,6 +80,9 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
         //initializing boom object
         boom = new Boom(context);
         activateScore();
+
+        bg = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.gamebackground);
+        bgResized = Bitmap.createScaledBitmap(bg, screenX, screenY, true);
     }
 
 
@@ -148,8 +138,6 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
         boom.setY(-650);
 
         for (int i = 0; i < enemyCount; i++) {
-           // enemies[i].update(player.getSpeed());
-
             //if collision occurrs with player
             if (Rect.intersects(player.getDetectCollision(), enemies[i].getDetectCollision())) {
                 lives--;
@@ -166,15 +154,18 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
     private void draw() {
         if (surfaceHolder.getSurface().isValid()) {
             canvas = surfaceHolder.lockCanvas();
+            // Draw background image
+            //canvas.drawBitmap(bgResized,0,0, paint);
+            // Draw black background
             canvas.drawColor(Color.BLACK);
-
             paint.setColor(Color.WHITE);
 
+            // Draw stars
             for (Star s : stars) {
                 paint.setStrokeWidth(s.getStarWidth());
                 canvas.drawPoint(s.getX(), s.getY(), paint);
             }
-
+            // Draw player
             canvas.drawBitmap(
                     player.getBitmap(),
                     player.getX(),
@@ -186,6 +177,7 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
             for (int i = 0; i < lives; i++) {
                 canvas.drawBitmap(resized, screenX - 55*(i+1), 15, paint);
             }
+
             // draw score
             paint.setColor(Color.argb(255, 249, 129, 0));
             paint.setTextSize(40);
