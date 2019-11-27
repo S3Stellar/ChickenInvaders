@@ -1,0 +1,22 @@
+
+Ssquid:S1066Ü"/Merge this if statement with the enclosing one.(ÒîŠÉüÿÿÿÿ8Ë°Óê-
+Gsquid:S1148–"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ8‹ú˜Õê-
+_squid:HiddenFieldCheck¡"5Rename "s" which hides the field declared at line 39.(’ê’š8ÖŠ±Îê-
+Csquid:S1068'"%Remove this unused "s" private field.(š½È8ŞßÑê-
+qsquid:S3776Õ"RRefactor this method to reduce its Cognitive Complexity from 25 to the 15 allowed.(‰¢í8ÚÖê-
+Gsquid:S1148¹"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ8Ë°Óê-
+ssquid:S1450$"URemove the "canvas" field and declare it as a local variable in the relevant methods.(Šïï8‹ú˜Õê-
+esquid:S2142—"FEither re-interrupt this method or rethrow the "InterruptedException".(ä ¹€8‹ú˜Õê-
+osquid:CommentedOutCodeLineœ"<This block of commented-out lines of code should be removed.(®Õ–Òüÿÿÿÿ8£ÕÿÖê-
+ssquid:S001162"TRename this field "stars_num" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(©ßü8³«ãÑê-
+Vsquid:S1197<"8Move the array designator from the variable to the type.(¹èóø8Û¿‡×ê-
+Gsquid:S3010…"(Remove this assignment of "gameOnSound".(Ùˆº8ƒåËÏê-
+dsquid:HiddenFieldCheckŞ"5Rename "s" which hides the field declared at line 39.(€é¡×ÿÿÿÿÿ8½ßºÎê-
+dsquid:S2147—"ECombine this catch with the one at line 277, which has the same body.(ä ¹€8‹ú˜Õê-
+]"squid:SwitchLastCaseIsDefaultCheckË""Add a default case to this switch.(óæÅşÿÿÿÿ8Ë°Óê-
+osquid:CommentedOutCodeLineÙ"<This block of commented-out lines of code should be removed.(¢öÍıÿÿÿÿ8§œŒÏê-
+Gsquid:S1148˜"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ8‹ú˜Õê-
+squid:S1450K"\Remove the "timeThisFrame" field and declare it as a local variable in the relevant methods.(œ†·Áûÿÿÿÿ8âÑÔ¨è-
+Usquid:S1197;"8Move the array designator from the variable to the type.(Şˆª8Ÿ‹÷Õê-
+Ssquid:S1066ó"/Merge this if statement with the enclosing one.(£ºÊ°ûÿÿÿÿ8Ë°Óê-
+esquid:S2142¸"FEither re-interrupt this method or rethrow the "InterruptedException".(ä ¹€8Ë°Óê-

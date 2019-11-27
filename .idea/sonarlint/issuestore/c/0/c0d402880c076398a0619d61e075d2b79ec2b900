@@ -1,0 +1,8 @@
+
+?squid:S1170"!Make this final field static too.(¿åÚõ8ôé¬¨è-
+osquid:S00116"PRename this field "RIGHT" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÁÕ·µ8ôé¬¨è-
+qsquid:S00116"RRename this field "STOPPED" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¿åÚõ8ôé¬¨è-
+Fsquid:S1068"(Remove this unused "minY" private field.(¢®¹ƒ8–¼Èé-
+?squid:S1170"!Make this final field static too.(ñ¿Ìô8ôé¬¨è-
+nsquid:S00116"ORename this field "LEFT" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ñ¿Ìô8ôé¬¨è-
+?squid:S1170"!Make this final field static too.(ÁÕ·µ8ôé¬¨è-
