@@ -15,7 +15,7 @@ public class PlayerShip {
     private int maxX;
     private int minX;
 
-    // This will hold the pixels per second speedthat the paddle will move
+    // This will hold the pixels per second that the spaceship will move
     private int shipSpeed;
 
     // Which ways can the paddle move
@@ -39,38 +39,38 @@ public class PlayerShip {
         maxX = screenX - bitmap.getWidth();
         minX = 0;
 
-        //initializing rect object
+        // Initializing rect object
         detectCollision = new Rect(x, y, bitmap.getWidth(), bitmap.getHeight());
-        // How fast is the paddle in pixels per second
+        // How fast is the spaceship in pixels per second
         shipSpeed = 1000;
     }
 
     // This method will be used to change/set if the paddle is going left, right or nowhere
-    public void setMovementState(int state){
+    public void setMovementState(int state) {
         shipMoving = state;
     }
 
     public void update(long fps) {
         if (shipMoving == LEFT)
-            x = (int)(x - shipSpeed/fps);
+            x = (int) (x - shipSpeed / fps);
 
 
         if (shipMoving == RIGHT)
-            x = (int)(x + shipSpeed/fps);
+            x = (int) (x + shipSpeed / fps);
 
         if (y > maxY) {
             y = maxY;
         }
-        if(x>maxX){
-            x=maxX;
+        if (x > maxX) {
+            x = maxX;
         }
-        if(x<minX){
-            x=minX;
+        if (x < minX) {
+            x = minX;
         }
 
 
         //adding top, left, bottom and right to the rect object
-        detectCollision.left = x+40;
+        detectCollision.left = x + 40;
         detectCollision.top = y + 50;
         detectCollision.right = x + bitmap.getWidth() - 40;
         detectCollision.bottom = y + bitmap.getHeight() - 70;
@@ -92,9 +92,5 @@ public class PlayerShip {
 
     public int getY() {
         return y;
-    }
-
-    public int getSpeed() {
-        return shipSpeed;
     }
 }

@@ -28,10 +28,10 @@ public class Star {
         y = generator.nextInt(maxY);
     }
 
-    public void update(int playerSpeed) {
+    public void update(int progressSpeed) {
         //animating the star horizontally left side
         //by decreasing x coordinate with player speed
-        y += playerSpeed;
+        y += progressSpeed;
         y += speed;
         //if the star reached the left edge of the screen
         if (y > maxY) {

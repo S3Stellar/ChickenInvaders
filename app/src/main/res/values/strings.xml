@@ -3,4 +3,6 @@
     <string name="startText">START</string>
     <string name="nickname">Nickname . . .</string>
     <string name="background_image">Background image</string>
+    <string name="hallOfFame">Hall of fame</string>
+    <string name="back">BACK</string>
 </resources>
