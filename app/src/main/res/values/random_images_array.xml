@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <array name="apptour">
+    <array name="chickenimages">
         <item>@drawable/chicken1</item>
         <item>@drawable/chicken2</item>
         <item>@drawable/chicken3</item>
