@@ -11,7 +11,6 @@ public class PlayerShip {
     private int y;
 
     private int maxY;
-    private int minY;
     private int maxX;
     private int minX;
 
@@ -19,9 +18,9 @@ public class PlayerShip {
     private int shipSpeed;
 
     // Which ways can the paddle move
-    public final int STOPPED = 0;
-    public final int LEFT = 1;
-    public final int RIGHT = 2;
+    public static final int STOPPED = 0;
+    public static final int LEFT = 1;
+    public static final int RIGHT = 2;
 
     // Is the ship moving and in which direction
     private int shipMoving = STOPPED;
@@ -35,7 +34,6 @@ public class PlayerShip {
         bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.spaceship);
 
         maxY = screenY - bitmap.getHeight();
-        minY = 0;
         maxX = screenX - bitmap.getWidth();
         minX = 0;
 

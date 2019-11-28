@@ -23,14 +23,13 @@ public class GameActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         // Get username
-        String nickname="";
+        String nickname = "";
         Bundle bundle = getIntent().getExtras();
         if (bundle != null)
             nickname = bundle.getString("nickname");
         // Set the main play game drawer view
         chickenInvadersView = new ChickenInvadersView(this, nickname);
         setContentView(chickenInvadersView);
-
     }
 
 
@@ -72,7 +71,7 @@ public class GameActivity extends AppCompatActivity {
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         ChickenInvadersView.stopMusic();
-                        chickenInvadersView.playing = false;
+                        chickenInvadersView.pause();
                         Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                         finish();
                         startActivity(intent);

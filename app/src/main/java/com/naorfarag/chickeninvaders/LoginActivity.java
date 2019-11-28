@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,7 +16,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private EditText userNickname;
     private MediaPlayer loginSound;
 
     @Override
@@ -27,15 +28,27 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
 
-    public void onStart(View view) {
-        if(view==findViewById(R.id.startButton)) {
+    public void onButton(View view) {
+        if (view == findViewById(R.id.startButton)) {
+            // Send nickname to game manager
             Intent intent = new Intent(getApplicationContext(), GameActivity.class);
             intent.putExtra("nickname", ((EditText) findViewById(R.id.nickText)).getText().toString());
+
+            // Pop game play keys
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(getApplicationContext(), "Click left side of the screen to move left\n" +
+                            "Click right side of the screen to move right", Toast.LENGTH_LONG).show();
+                }
+            }, 0);
+
+            // Start the game
             startActivity(intent);
         }
-        if(view==findViewById(R.id.hallOfFame)){
-            startActivity(new Intent(this,HighScore.class));
-        }
+        // Show score ranking
+        if (view == findViewById(R.id.hallOfFame))
+            startActivity(new Intent(this, HighScore.class));
     }
 
     @Override
@@ -112,6 +125,5 @@ public class LoginActivity extends AppCompatActivity {
     public void onDestroy() {
         stopMusic();
         super.onDestroy();
-
     }
 }

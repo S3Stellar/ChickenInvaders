@@ -28,7 +28,7 @@ public class Boom {
         y = -650;
     }
 
-    //setters for x and y to make it visible at the place of collision
+    // Setters for x and y to make it visible at the place of collision
     public void setX(int x) {
         this.x = x;
     }
@@ -37,7 +37,7 @@ public class Boom {
         this.y = y;
     }
 
-    //getters
+    // Getters
     public Bitmap getBitmap() {
         return bitmap;
     }

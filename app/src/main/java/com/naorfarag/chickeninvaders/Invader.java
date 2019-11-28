@@ -24,12 +24,12 @@ public class Invader {
     private Rect detectCollision;
 
     private Random rand = new Random();
-    private TypedArray chicken_images;
+    private TypedArray chickenImages;
     private Context context;
 
     public Invader(Context context, int screenX, int screenY) {
         this.context = context;
-        chicken_images = context.getResources().obtainTypedArray(R.array.chickenimages);
+        chickenImages = context.getResources().obtainTypedArray(R.array.chickenimages);
         changeChickenImage();
         maxX = screenX;
         maxY = screenY;
@@ -44,8 +44,8 @@ public class Invader {
     }
 
     private void changeChickenImage() {
-        final int rndInt = rand.nextInt(chicken_images.length());
-        final int resID = chicken_images.getResourceId(rndInt, 0);
+        final int rndInt = rand.nextInt(chickenImages.length());
+        final int resID = chickenImages.getResourceId(rndInt, 0);
         bitmap = BitmapFactory.decodeResource(context.getResources(), resID);
     }
 
@@ -62,7 +62,7 @@ public class Invader {
         // Adding the top, left, bottom and right to the rect object
         detectCollision.left = x;
         detectCollision.top = y+bitmap.getHeight()/4;
-        detectCollision.right = x + bitmap.getWidth()/(1+1/3);
+        detectCollision.right = x + bitmap.getWidth();
         detectCollision.bottom = y + bitmap.getHeight()/2;
     }
 

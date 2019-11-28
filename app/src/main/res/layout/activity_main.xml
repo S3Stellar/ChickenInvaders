@@ -48,7 +48,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="#362F4BFA"
-            android:onClick="onStart"
+            android:onClick="onButton"
             android:text="@string/startText"
             android:textColor="#D3DDD2D2"
             android:textSize="18sp" />
@@ -59,7 +59,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="55dp"
             android:backgroundTint="#362F4BFA"
-            android:onClick="onStart"
+            android:onClick="onButton"
             android:text="@string/hallOfFame"
             android:textColor="#D3DDD2D2"
             android:textSize="18sp" />
