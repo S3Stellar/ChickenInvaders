@@ -14,18 +14,16 @@ import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.WindowManager;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.FutureTarget;
-
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.concurrent.ExecutionException;
+
 
 public class ChickenInvadersView extends SurfaceView implements Runnable {
 
@@ -36,7 +34,6 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
     private Canvas canvas;
     private SurfaceHolder surfaceHolder;
 
-    private Star s;
     private Boom boom;
     private PlayerShip player;
     private Invader[] enemies;
@@ -56,10 +53,10 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
     private int lives = 3;
 
     // The high Scores Holder
-    int highScore[] = new int[4];
-    String highScoreNames[] = new String[4];
+    int[] highScore = new int[4];
+    String[] highScoreNames = new String[4];
 
-    // Shared Prefernces to store the High Scores
+    // Shared Preferences to store the High Scores
     SharedPreferences sharedPreferences;
 
     // Game over
@@ -84,6 +81,9 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
     // Background bitmap
     private Bitmap gameBackground;
 
+    // Game over bitmap
+    Bitmap gameOverBitmap;
+
     // Background game play sound
     static MediaPlayer gameOnSound;
 
@@ -99,11 +99,20 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
 
     public ChickenInvadersView(Context context, String nickname) {
         super(context);
-        setScreenSize();
         this.nickname = nickname;
+        setScreenSize();
+
         // Resize heart bitmap
         heart = BitmapFactory.decodeResource(context.getResources(), R.drawable.heart);
         heart = Bitmap.createScaledBitmap(heart, 50, 50, true);
+
+        // In case of using background instead black color
+        gameBackground = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.gamebackground);
+        gameBackground = Bitmap.createScaledBitmap(gameBackground, screenX, screenY, true);
+
+        // Game over bitmap
+        gameOverBitmap = BitmapFactory.decodeResource(getContext().getResources(), R.raw.gameovergif);
+        gameOverBitmap = Bitmap.createScaledBitmap(gameOverBitmap, screenX, screenY / 2, true);
 
         player = new PlayerShip(context, screenX, screenY);
         surfaceHolder = getHolder();
@@ -118,24 +127,32 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
         for (int i = 0; i < enemyCount; i++)
             enemies[i] = new Invader(context, screenX, screenY);
 
-
         // Initialize boom object
         boom = new Boom(context);
 
         // Start score counter (1sec)
         activateScore();
 
-        // In case of using background instead black color
-        gameBackground = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.gamebackground);
-        gameBackground = Bitmap.createScaledBitmap(gameBackground, screenX, screenY + 150, true);
-
         //initializing the media players for the game sounds
         gameOnSound = MediaPlayer.create(context, R.raw.chicksoundtrack);
         killedEnemySound = MediaPlayer.create(context, R.raw.killedenemy);
         gameOverSound = MediaPlayer.create(context, R.raw.gameover);
 
+        MediaPlayer.OnCompletionListener onCompletionListener = new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                if (mp != null && mp.isPlaying()) {
+                    mp.pause();
+                    mp.seekTo(0);
+                }
+            }
+        };
+        gameOverSound.setOnCompletionListener(onCompletionListener);
+        killedEnemySound.setOnCompletionListener(onCompletionListener);
+
         // Start gameplay music
-        gameOnSound.start();
+        if (gameOnSound != null && !gameOnSound.isPlaying())
+            gameOnSound.start();
 
         //initializing shared Preferences
         sharedPreferences = context.getSharedPreferences("SHAR_PREF_NAME", Context.MODE_PRIVATE);
@@ -145,18 +162,16 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
         highScore[1] = sharedPreferences.getInt("score2", 0);
         highScore[2] = sharedPreferences.getInt("score3", 0);
         highScore[3] = sharedPreferences.getInt("score4", 0);
-        highScoreNames[0] = sharedPreferences.getString("nickname1","");
-        highScoreNames[1] = sharedPreferences.getString("nickname2","");
-        highScoreNames[2] = sharedPreferences.getString("nickname3","");
-        highScoreNames[3] = sharedPreferences.getString("nickname4","");
-
+        highScoreNames[0] = sharedPreferences.getString("nickname1", "");
+        highScoreNames[1] = sharedPreferences.getString("nickname2", "");
+        highScoreNames[2] = sharedPreferences.getString("nickname3", "");
+        highScoreNames[3] = sharedPreferences.getString("nickname4", "");
     }
 
 
     @Override
     public void run() {
         while (playing) {
-
             // Increase stars & Invader speed as game progress
             for (Star s : stars)
                 s.update(new Random().nextInt(5) + 1 + score / 7);
@@ -194,7 +209,12 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
         for (int i = 0; i < enemyCount; i++) {
             // If collision occurs with player
             if (Rect.intersects(player.getDetectCollision(), enemies[i].getDetectCollision())) {
-                killedEnemySound.start();
+                if (killedEnemySound != null && killedEnemySound.isPlaying())
+                    killedEnemySound.pause();
+                else if (killedEnemySound != null && !killedEnemySound.isPlaying()) {
+                    //killedEnemySound.seekTo(0);
+                    killedEnemySound.start();
+                }
                 lives--;
                 // Displaying boom at that location
                 boom.setX(enemies[i].getX());
@@ -205,8 +225,11 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
         if (lives == 0) {
             playing = false;
             gameOver = true;
-            gameOnSound.stop();
-            gameOverSound.start();
+            if (gameOverSound != null && !gameOverSound.isPlaying()) {
+                //gameOverSound.seekTo(0);
+                gameOverSound.start();
+            }
+            //stopMusic();
         }
     }
 
@@ -258,30 +281,17 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
 
             // Game over - draw bitmap (need to fix gif)
             if (gameOver) {
-                paint.setTextSize(150);
-                paint.setTextAlign(Paint.Align.CENTER);
-
                 int yPos = (int) ((canvas.getHeight() / 2) - ((paint.descent() + paint.ascent()) / 2));
-                FutureTarget<Bitmap> futureTarget =
-                        Glide.with(getContext())
-                                .asBitmap()
-                                .load(R.raw.gameovergif)
-                                .submit(screenX / 2, screenY / 2);
-                try {
-                    Bitmap gameOverBitmap = futureTarget.get();
-                    canvas.drawBitmap(gameOverBitmap, screenX / 2 - gameOverBitmap.getWidth() / 2, yPos / 2, paint);
-                    Glide.with(getContext()).clear(futureTarget);
-                    paint.setTypeface(Typeface.create("Arial", Typeface.ITALIC));
-                    paint.setTextSize(35);
-                    canvas.drawText("Click to play again!", canvas.getWidth() / 2, yPos + gameOverBitmap.getHeight() / 4, paint);
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                canvas.drawBitmap(gameOverBitmap, screenX / 2 - gameOverBitmap.getWidth() / 2, yPos / 2, paint);
+
+                // Write "play again"
+                paint.setTypeface(Typeface.create("Arial", Typeface.ITALIC));
+                paint.setTextAlign(Paint.Align.CENTER);
+                paint.setTextSize(35);
+                canvas.drawText("Click to play again!", canvas.getWidth() / 2, yPos + gameOverBitmap.getHeight() / 4, paint);
+
                 for (int i = 0; i < 4; i++) {
                     if (highScore[i] < score) {
-                       // final int finalI = i;
                         highScore[i] = score;
                         highScoreNames[i] = nickname;
                         break;
@@ -294,7 +304,7 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
                 for (int i = 0; i < 4; i++) {
                     int j = i + 1;
                     e.putInt("score" + j, highScore[i]);
-                    e.putString("nickname"+j,highScoreNames[i]);
+                    e.putString("nickname" + j, highScoreNames[i]);
                 }
                 e.apply();
             }
@@ -305,18 +315,20 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
 
     public void pause() {
         playing = false;
-        if (gameOnSound != null)
+        if (gameOnSound != null && gameOnSound.isPlaying())
             gameOnSound.pause();
         try {
             gameThread.join();
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            gameThread.interrupt();
+            Log.e("ChickenInvadersView", "ThreadException", e);
         }
     }
 
     public void resume() {
         playing = true;
-        gameOnSound.start();
+        if (gameOnSound != null && !gameOnSound.isPlaying())
+            gameOnSound.start();
         gameThread = new Thread(this);
         gameThread.start();
     }
@@ -344,9 +356,12 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
                     player.setMovementState(player.LEFT);
                 break;
         }
-        if (gameOver)
-            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN)
-                getContext().startActivity(new Intent(getContext(), GameActivity.class));
+        if (gameOver && motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+            stopMusic();
+            Intent intent = new Intent(getContext(), GameActivity.class);
+            intent.putExtra("nickname", nickname);
+            getContext().startActivity(intent);
+        }
         return true;
     }
 
@@ -358,6 +373,18 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
             gameOnSound.release();
             gameOnSound = null;
         }
+        /*if (killedEnemySound != null) {
+            killedEnemySound.stop();
+            killedEnemySound.reset();
+            killedEnemySound.release();
+            killedEnemySound = null;
+        }
+        if (gameOverSound != null && !gameOverSound.isPlaying()) {
+            gameOverSound.stop();
+            gameOverSound.reset();
+            gameOverSound.release();
+            gameOverSound = null;
+        }*/
     }
 
     // Increase score every 1 second
@@ -367,9 +394,8 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
             @Override
             public void run() {
                 if (score < 9999) {
-                    if (!paused && lives > 0)
-                        if (playing)
-                            score++;
+                    if (!paused && lives > 0 && playing)
+                        score++;
                     handler.postDelayed(this, 1000L);
                     return;
                 }
@@ -378,6 +404,7 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
         }, 1000L);
     }
 
+    // Set screenX screenY according to navigation bar
     public void setScreenSize() {
         WindowManager windowManager =
                 (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);

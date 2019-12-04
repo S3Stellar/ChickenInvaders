@@ -12,6 +12,7 @@
     android:background="@drawable/gamebackground">
 
     <ImageView
+        tools:ignore="ContentDescription"
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -41,7 +42,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-
         android:fontFamily="monospace"
         android:gravity="center"
         android:includeFontPadding="true"

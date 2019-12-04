@@ -12,9 +12,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class HighScore extends AppCompatActivity {
 
-    TextView textView, textView2, textView3, textView4;
+    private TextView textView, textView2, textView3, textView4;
 
-    SharedPreferences sharedPreferences;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,10 +28,10 @@ public class HighScore extends AppCompatActivity {
 
         sharedPreferences = getSharedPreferences("SHAR_PREF_NAME", Context.MODE_PRIVATE);
 
-        textView.setText("First : " + sharedPreferences.getInt("score1", 0) + ", " + sharedPreferences.getString("nickname1", "Anonymous"));
-        textView2.setText("Second : " + sharedPreferences.getInt("score2", 0) + ", " + sharedPreferences.getString("nickname2", "Anonymous"));
-        textView3.setText("Third : " + sharedPreferences.getInt("score3", 0) + ", " + sharedPreferences.getString("nickname3", "Anonymous"));
-        textView4.setText("Fourth : " + sharedPreferences.getInt("score4", 0) + ", " + sharedPreferences.getString("nickname4", "Anonymous"));
+        textView.setText("First : " + sharedPreferences.getInt("score1", 0) + ", " + sharedPreferences.getString("nickname1", ""));
+        textView2.setText("Second : " + sharedPreferences.getInt("score2", 0) + ", " + sharedPreferences.getString("nickname2", ""));
+        textView3.setText("Third : " + sharedPreferences.getInt("score3", 0) + ", " + sharedPreferences.getString("nickname3", ""));
+        textView4.setText("Fourth : " + sharedPreferences.getInt("score4", 0) + ", " + sharedPreferences.getString("nickname4", ""));
 
 
     }
