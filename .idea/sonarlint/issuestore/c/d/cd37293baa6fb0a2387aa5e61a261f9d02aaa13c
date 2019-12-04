@@ -1,8 +1,0 @@
-
-Fsquid:S1068"(Remove this unused "minY" private field.(¢®¹ƒ8ñ‚Ïˆè-
-Asquid:S21194"Save and re-use this "Random".(šŸ«íøÿÿÿÿ8ñ‚Ïˆè-
-Asquid:S2119)"Save and re-use this "Random".(¼Ú’¸şÿÿÿÿ8ñ‚Ïˆè-
-Fsquid:S1068"(Remove this unused "minX" private field.(°•8ñ‚Ïˆè-
-fsquid:HiddenFieldCheck2"8Rename "minX" which hides the field declared at line 13.(¬øŠıÿÿÿÿ8ñ‚Ïˆè-
-asquid:HiddenFieldCheck3"8Rename "maxX" which hides the field declared at line 11.(¤ó§8ñ‚Ïˆè-
-squid:S14885"^Immediately return this expression instead of assigning it to the temporary variable "finalX".(Æ‡ë™ûÿÿÿÿ8ñ‚Ïˆè-

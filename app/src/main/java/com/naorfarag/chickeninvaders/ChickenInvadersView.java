@@ -81,6 +81,9 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
     // Background bitmap
     private Bitmap gameBackground;
 
+    // Game over bitmap
+    Bitmap gameOverBitmap;
+
     // Background game play sound
     static MediaPlayer gameOnSound;
 
@@ -96,11 +99,20 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
 
     public ChickenInvadersView(Context context, String nickname) {
         super(context);
-        setScreenSize();
         this.nickname = nickname;
+        setScreenSize();
+
         // Resize heart bitmap
         heart = BitmapFactory.decodeResource(context.getResources(), R.drawable.heart);
         heart = Bitmap.createScaledBitmap(heart, 50, 50, true);
+
+        // In case of using background instead black color
+        gameBackground = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.gamebackground);
+        gameBackground = Bitmap.createScaledBitmap(gameBackground, screenX, screenY, true);
+
+        // Game over bitmap
+        gameOverBitmap = BitmapFactory.decodeResource(getContext().getResources(), R.raw.gameovergif);
+        gameOverBitmap = Bitmap.createScaledBitmap(gameOverBitmap, screenX, screenY / 2, true);
 
         player = new PlayerShip(context, screenX, screenY);
         surfaceHolder = getHolder();
@@ -115,21 +127,28 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
         for (int i = 0; i < enemyCount; i++)
             enemies[i] = new Invader(context, screenX, screenY);
 
-
         // Initialize boom object
         boom = new Boom(context);
 
         // Start score counter (1sec)
         activateScore();
 
-        // In case of using background instead black color
-        gameBackground = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.gamebackground);
-        gameBackground = Bitmap.createScaledBitmap(gameBackground, screenX, screenY, true);
-
         //initializing the media players for the game sounds
         gameOnSound = MediaPlayer.create(context, R.raw.chicksoundtrack);
         killedEnemySound = MediaPlayer.create(context, R.raw.killedenemy);
         gameOverSound = MediaPlayer.create(context, R.raw.gameover);
+
+        MediaPlayer.OnCompletionListener onCompletionListener = new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                if (mp != null && mp.isPlaying()) {
+                    mp.pause();
+                    mp.seekTo(0);
+                }
+            }
+        };
+        gameOverSound.setOnCompletionListener(onCompletionListener);
+        killedEnemySound.setOnCompletionListener(onCompletionListener);
 
         // Start gameplay music
         if (gameOnSound != null && !gameOnSound.isPlaying())
@@ -192,8 +211,8 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
             if (Rect.intersects(player.getDetectCollision(), enemies[i].getDetectCollision())) {
                 if (killedEnemySound != null && killedEnemySound.isPlaying())
                     killedEnemySound.pause();
-                else if (killedEnemySound != null) {
-                    killedEnemySound.seekTo(0);
+                else if (killedEnemySound != null && !killedEnemySound.isPlaying()) {
+                    //killedEnemySound.seekTo(0);
                     killedEnemySound.start();
                 }
                 lives--;
@@ -206,11 +225,11 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
         if (lives == 0) {
             playing = false;
             gameOver = true;
-            stopMusic();
             if (gameOverSound != null && !gameOverSound.isPlaying()) {
-                gameOverSound.seekTo(0);
+                //gameOverSound.seekTo(0);
                 gameOverSound.start();
             }
+            //stopMusic();
         }
     }
 
@@ -263,8 +282,6 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
             // Game over - draw bitmap (need to fix gif)
             if (gameOver) {
                 int yPos = (int) ((canvas.getHeight() / 2) - ((paint.descent() + paint.ascent()) / 2));
-                Bitmap gameOverBitmap = BitmapFactory.decodeResource(getContext().getResources(), R.raw.gameovergif);
-                gameOverBitmap = Bitmap.createScaledBitmap(gameOverBitmap, screenX, screenY / 2, true);
                 canvas.drawBitmap(gameOverBitmap, screenX / 2 - gameOverBitmap.getWidth() / 2, yPos / 2, paint);
 
                 // Write "play again"
@@ -341,7 +358,9 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
         }
         if (gameOver && motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
             stopMusic();
-            getContext().startActivity(new Intent(getContext(), GameActivity.class));
+            Intent intent = new Intent(getContext(), GameActivity.class);
+            intent.putExtra("nickname", nickname);
+            getContext().startActivity(intent);
         }
         return true;
     }
@@ -354,6 +373,18 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
             gameOnSound.release();
             gameOnSound = null;
         }
+        /*if (killedEnemySound != null) {
+            killedEnemySound.stop();
+            killedEnemySound.reset();
+            killedEnemySound.release();
+            killedEnemySound = null;
+        }
+        if (gameOverSound != null && !gameOverSound.isPlaying()) {
+            gameOverSound.stop();
+            gameOverSound.reset();
+            gameOverSound.release();
+            gameOverSound = null;
+        }*/
     }
 
     // Increase score every 1 second
@@ -373,6 +404,7 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
         }, 1000L);
     }
 
+    // Set screenX screenY according to navigation bar
     public void setScreenSize() {
         WindowManager windowManager =
                 (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
