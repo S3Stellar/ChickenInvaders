@@ -24,7 +24,7 @@
 
     <TextView
 
-        android:id="@+id/textView"
+        android:id="@+id/textView00"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
@@ -38,7 +38,7 @@
     <TextView
 
 
-        android:id="@+id/textView2"
+        android:id="@+id/textView01"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
@@ -51,7 +51,7 @@
 
     <TextView
 
-        android:id="@+id/textView3"
+        android:id="@+id/textView02"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
@@ -64,7 +64,7 @@
 
     <TextView
 
-        android:id="@+id/textView4"
+        android:id="@+id/textView03"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"

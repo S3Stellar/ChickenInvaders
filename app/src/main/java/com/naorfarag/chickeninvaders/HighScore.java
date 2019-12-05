@@ -1,7 +1,6 @@
 package com.naorfarag.chickeninvaders;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -10,10 +9,10 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 
-public class HighScore extends AppCompatActivity {
+public class HighScore extends AppCompatActivity implements Finals {
 
-    private TextView textView, textView2, textView3, textView4;
 
+    private TextView[] textViews = new TextView[HIGH_SCORE_COUNT];
     private SharedPreferences sharedPreferences;
 
     @Override
@@ -21,19 +20,12 @@ public class HighScore extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_high_score);
 
-        textView = findViewById(R.id.textView);
-        textView2 = findViewById(R.id.textView2);
-        textView3 = findViewById(R.id.textView3);
-        textView4 = findViewById(R.id.textView4);
-
-        sharedPreferences = getSharedPreferences("SHAR_PREF_NAME", Context.MODE_PRIVATE);
-
-        textView.setText("First : " + sharedPreferences.getInt("score1", 0) + ", " + sharedPreferences.getString("nickname1", ""));
-        textView2.setText("Second : " + sharedPreferences.getInt("score2", 0) + ", " + sharedPreferences.getString("nickname2", ""));
-        textView3.setText("Third : " + sharedPreferences.getInt("score3", 0) + ", " + sharedPreferences.getString("nickname3", ""));
-        textView4.setText("Fourth : " + sharedPreferences.getInt("score4", 0) + ", " + sharedPreferences.getString("nickname4", ""));
-
-
+        HOF_RANKS[] hof_ranks = HOF_RANKS.values();
+        sharedPreferences = getSharedPreferences(SHARED_PREF, Context.MODE_PRIVATE);
+        for (int i = 0; i < HIGH_SCORE_COUNT; i++) {
+            textViews[i] = findViewById(getResources().getIdentifier("textView0" + i, "id", getPackageName()));
+            textViews[i].setText(hof_ranks[i].getRank() + sharedPreferences.getInt(SCORE + i, 0) + ", " + sharedPreferences.getString(NICKNAME + i, ""));
+        }
     }
 
     @Override
@@ -51,7 +43,6 @@ public class HighScore extends AppCompatActivity {
     }
 
     public void onBack(View view) {
-        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-        startActivity(intent);
+        finish();
     }
 }

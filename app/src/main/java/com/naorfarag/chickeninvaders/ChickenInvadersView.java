@@ -12,7 +12,6 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.media.MediaPlayer;
-import android.os.Build;
 import android.os.Handler;
 import android.util.Log;
 import android.view.Display;
@@ -22,10 +21,11 @@ import android.view.SurfaceView;
 import android.view.WindowManager;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 
 
-public class ChickenInvadersView extends SurfaceView implements Runnable {
+public class ChickenInvadersView extends SurfaceView implements Runnable, Finals {
 
     volatile boolean playing;
     private Thread gameThread = null;
@@ -41,23 +41,22 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
             ArrayList<>();
 
     // Amount of enemies on screen at same time
-    private int enemyCount = 3;
+    private int enemyCount = ENEMIES_COUNT;
 
     // Number of stars
-    private int stars_num = 100;
+    private int stars_num = STARS_COUNT;
 
     // The score
-    private int score = 0;
+    private int score;
 
     // Lives
-    private int lives = 3;
+    private int lives = MAX_LIFE;
 
     // The high Scores Holder
-    int[] highScore = new int[4];
-    String[] highScoreNames = new String[4];
+    private ArrayList<PlayerNickScore> gameScores = new ArrayList<>();
 
     // Shared Preferences to store the High Scores
-    SharedPreferences sharedPreferences;
+    private SharedPreferences sharedPreferences;
 
     // Game over
     private boolean gameOver = false;
@@ -78,11 +77,11 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
     // Hearts bitmap
     private Bitmap heart;
 
-    // Background bitmap
-    private Bitmap gameBackground;
+    // Background bitmap (if chosen to use)
+    //private Bitmap gameBackground;
 
     // Game over bitmap
-    Bitmap gameOverBitmap;
+    private Bitmap gameOverBitmap;
 
     // Background game play sound
     static MediaPlayer gameOnSound;
@@ -96,7 +95,6 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
     // Player's nickname
     private String nickname;
 
-
     public ChickenInvadersView(Context context, String nickname) {
         super(context);
         this.nickname = nickname;
@@ -107,15 +105,18 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
         heart = Bitmap.createScaledBitmap(heart, 50, 50, true);
 
         // In case of using background instead black color
-        gameBackground = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.gamebackground);
-        gameBackground = Bitmap.createScaledBitmap(gameBackground, screenX, screenY, true);
+        /*gameBackground = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.gamebackground);
+        gameBackground = Bitmap.createScaledBitmap(gameBackground, screenX, screenY, true);*/
 
         // Game over bitmap
         gameOverBitmap = BitmapFactory.decodeResource(getContext().getResources(), R.raw.gameovergif);
         gameOverBitmap = Bitmap.createScaledBitmap(gameOverBitmap, screenX, screenY / 2, true);
 
+        // Initializing
+        sharedPreferences = context.getSharedPreferences(SHARED_PREF, Context.MODE_PRIVATE);
         player = new PlayerShip(context, screenX, screenY);
         surfaceHolder = getHolder();
+        boom = new Boom(context);
         paint = new Paint();
 
         // Initialize stars for background effect
@@ -127,8 +128,10 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
         for (int i = 0; i < enemyCount; i++)
             enemies[i] = new Invader(context, screenX, screenY);
 
-        // Initialize boom object
-        boom = new Boom(context);
+        for (int i = 0; i < HIGH_SCORE_COUNT; i++) {
+            gameScores.add(new PlayerNickScore(sharedPreferences.getInt(SCORE + i, 0)
+                    , sharedPreferences.getString(NICKNAME + i, "")));
+        }
 
         // Start score counter (1sec)
         activateScore();
@@ -153,19 +156,6 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
         // Start gameplay music
         if (gameOnSound != null && !gameOnSound.isPlaying())
             gameOnSound.start();
-
-        //initializing shared Preferences
-        sharedPreferences = context.getSharedPreferences("SHAR_PREF_NAME", Context.MODE_PRIVATE);
-
-        //initializing the array high scores with the previous values
-        highScore[0] = sharedPreferences.getInt("score1", 0);
-        highScore[1] = sharedPreferences.getInt("score2", 0);
-        highScore[2] = sharedPreferences.getInt("score3", 0);
-        highScore[3] = sharedPreferences.getInt("score4", 0);
-        highScoreNames[0] = sharedPreferences.getString("nickname1", "");
-        highScoreNames[1] = sharedPreferences.getString("nickname2", "");
-        highScoreNames[2] = sharedPreferences.getString("nickname3", "");
-        highScoreNames[3] = sharedPreferences.getString("nickname4", "");
     }
 
 
@@ -203,8 +193,8 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
         player.update(fps);
 
         // Setting boom outside the screen
-        boom.setX(-650);
-        boom.setY(-650);
+        boom.setX(OUT_OF_BOUNDS);
+        boom.setY(OUT_OF_BOUNDS);
 
         for (int i = 0; i < enemyCount; i++) {
             // If collision occurs with player
@@ -212,7 +202,6 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
                 if (killedEnemySound != null && killedEnemySound.isPlaying())
                     killedEnemySound.pause();
                 else if (killedEnemySound != null && !killedEnemySound.isPlaying()) {
-                    //killedEnemySound.seekTo(0);
                     killedEnemySound.start();
                 }
                 lives--;
@@ -226,10 +215,8 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
             playing = false;
             gameOver = true;
             if (gameOverSound != null && !gameOverSound.isPlaying()) {
-                //gameOverSound.seekTo(0);
                 gameOverSound.start();
             }
-            //stopMusic();
         }
     }
 
@@ -285,26 +272,27 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
                 canvas.drawBitmap(gameOverBitmap, screenX / 2 - gameOverBitmap.getWidth() / 2, yPos / 2, paint);
 
                 // Write "play again"
-                paint.setTypeface(Typeface.create("Arial", Typeface.ITALIC));
+                paint.setTypeface(Typeface.create(ARIAL_FONT, Typeface.ITALIC));
                 paint.setTextAlign(Paint.Align.CENTER);
                 paint.setTextSize(35);
-                canvas.drawText("Click to play again!", canvas.getWidth() / 2, yPos + gameOverBitmap.getHeight() / 4, paint);
+                canvas.drawText(PLAY_AGAIN, canvas.getWidth() / 2, yPos + gameOverBitmap.getHeight() / 4, paint);
 
-                for (int i = 0; i < 4; i++) {
-                    if (highScore[i] < score) {
-                        highScore[i] = score;
-                        highScoreNames[i] = nickname;
+                for (int i = HIGH_SCORE_COUNT - 1; i > 0; i--) {
+                    if (gameScores.get(i).getScore() < score) {
+                        gameScores.get(i).setScore(score);
+                        gameScores.get(i).setNickname(nickname);
                         break;
                     }
                 }
+                // Sort scores
+                Collections.sort(gameScores);
 
                 // Storing the scores through shared Preferences
                 SharedPreferences.Editor e = sharedPreferences.edit();
 
-                for (int i = 0; i < 4; i++) {
-                    int j = i + 1;
-                    e.putInt("score" + j, highScore[i]);
-                    e.putString("nickname" + j, highScoreNames[i]);
+                for (int i = 0; i < HIGH_SCORE_COUNT; i++) {
+                    e.putInt("score" + i, gameScores.get(i).getScore());
+                    e.putString("nickname" + i, gameScores.get(i).getNickname());
                 }
                 e.apply();
             }
@@ -321,7 +309,7 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
             gameThread.join();
         } catch (InterruptedException e) {
             gameThread.interrupt();
-            Log.e("ChickenInvadersView", "ThreadException", e);
+            Log.e(getClass().getSimpleName(), "ThreadException", e);
         }
     }
 
@@ -359,7 +347,7 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
         if (gameOver && motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
             stopMusic();
             Intent intent = new Intent(getContext(), GameActivity.class);
-            intent.putExtra("nickname", nickname);
+            intent.putExtra(NICKNAME, nickname);
             getContext().startActivity(intent);
         }
         return true;
@@ -373,18 +361,6 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
             gameOnSound.release();
             gameOnSound = null;
         }
-        /*if (killedEnemySound != null) {
-            killedEnemySound.stop();
-            killedEnemySound.reset();
-            killedEnemySound.release();
-            killedEnemySound = null;
-        }
-        if (gameOverSound != null && !gameOverSound.isPlaying()) {
-            gameOverSound.stop();
-            gameOverSound.reset();
-            gameOverSound.release();
-            gameOverSound = null;
-        }*/
     }
 
     // Increase score every 1 second
@@ -393,7 +369,7 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (score < 9999) {
+                if (score < MAX_SCORE) {
                     if (!paused && lives > 0 && playing)
                         score++;
                     handler.postDelayed(this, 1000L);
@@ -410,13 +386,8 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
                 (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
         final Display display = windowManager.getDefaultDisplay();
         Point outPoint = new Point();
-        if (Build.VERSION.SDK_INT >= 19) {
-            // include navigation bar
-            display.getRealSize(outPoint);
-        } else {
-            // exclude navigation bar
-            display.getSize(outPoint);
-        }
+        // include navigation bar
+        display.getRealSize(outPoint);
         if (outPoint.y > outPoint.x) {
             screenY = outPoint.y;
             screenX = outPoint.x;
