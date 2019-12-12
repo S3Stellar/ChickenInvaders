@@ -74,3 +74,11 @@ A
 local.properties,0\7\0712df971a99ac4d2fccb8e0fb19f377f3374cca
 ?
 settings.gradle,0\5\05efc8b1657769a27696d478ded1e95f38737233
+k
+;app/src/main/java/com/naorfarag/chickeninvaders/Finals.java,d\c\dc9d8218c2aeb6ae1ebbcf96aeb680ceb1d9e4d1
+t
+Dapp/src/main/java/com/naorfarag/chickeninvaders/PlayerNickScore.java,e\b\ebe0eed7b768061fe6235ebeb5f61394130fe8a7
+Y
+)app/src/main/res/drawable/buttonshape.xml,4\b\4b7bfbdee25aa310ab3c859179ecb0eccc7c1671
+d
+4app/src/main/res/drawable/ic_launcher_foreground.xml,5\8\587f297f0f0eaa1dcf927b2b5f0bc5430fadf54f

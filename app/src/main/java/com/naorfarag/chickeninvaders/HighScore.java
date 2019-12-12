@@ -23,6 +23,7 @@ public class HighScore extends AppCompatActivity implements Finals {
         HOF_RANKS[] hof_ranks = HOF_RANKS.values();
         sharedPreferences = getSharedPreferences(SHARED_PREF, Context.MODE_PRIVATE);
         for (int i = 0; i < HIGH_SCORE_COUNT; i++) {
+            // Initialize all textViews - textView00, textView01 ..
             textViews[i] = findViewById(getResources().getIdentifier("textView0" + i, "id", getPackageName()));
             textViews[i].setText(hof_ranks[i].getRank() + sharedPreferences.getInt(SCORE + i, 0) + ", " + sharedPreferences.getString(NICKNAME + i, ""));
         }
@@ -43,6 +44,12 @@ public class HighScore extends AppCompatActivity implements Finals {
     }
 
     public void onBack(View view) {
+        finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
         finish();
     }
 }

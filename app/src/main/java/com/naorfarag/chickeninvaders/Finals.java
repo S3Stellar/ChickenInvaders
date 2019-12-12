@@ -4,7 +4,7 @@ interface Finals {
 
     int MAX_LIFE = 3;
     int MAX_SCORE = 9999;
-    int ENEMIES_COUNT = 3;
+    //int ENEMIES_COUNT = 3;
     int STARS_COUNT = 100;
     int HIGH_SCORE_COUNT = 4;
 

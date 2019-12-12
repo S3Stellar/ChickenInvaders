@@ -1,10 +1,4 @@
 
-vsquid:S1450"XRemove the "textView3" field and declare it as a local variable in the relevant methods.(û¶û8–£Ë€ë-
-vsquid:S1450"XRemove the "textView2" field and declare it as a local variable in the relevant methods.(û¶û8–£Ë€ë-
-Esquid:S1659"'Declare "textView3" on a separate line.(û¶û8¿…ÊÕê-
-Esquid:S1659"'Declare "textView2" on a separate line.(û¶û8¿…ÊÕê-
-~squid:S1450"`Remove the "sharedPreferences" field and declare it as a local variable in the relevant methods.(„ºÌ¬8–£Ë€ë-
-vsquid:S1450"XRemove the "textView4" field and declare it as a local variable in the relevant methods.(û¶û8–£Ë€ë-
-qsquid:MaximumInheritanceDepth"<This class has 6 parents which is greater than 5 authorized.(…öÒ€ûÿÿÿÿ8ó™ÊÕê-
-Esquid:S1659"'Declare "textView4" on a separate line.(û¶û8¿…ÊÕê-
-usquid:S1450"WRemove the "textView" field and declare it as a local variable in the relevant methods.(û¶û8–£Ë€ë-
+lsquid:MaximumInheritanceDepth"<This class has 6 parents which is greater than 5 authorized.(„¯‚8ó™ÊÕê-
+~squid:S1450"`Remove the "sharedPreferences" field and declare it as a local variable in the relevant methods.(„ºÌ¬8—åäší-
+psquid:S00117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ëŞ³¬8‚©›í-

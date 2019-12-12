@@ -2,7 +2,6 @@ package com.naorfarag.chickeninvaders;
 
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.View;
@@ -24,11 +23,14 @@ public class GameActivity extends AppCompatActivity {
 
         // Get username
         String nickname = "";
+        int lanes=3;
         Bundle bundle = getIntent().getExtras();
-        if (bundle != null)
+        if (bundle != null) {
             nickname = bundle.getString("nickname");
+            lanes = bundle.getInt("lanes");
+        }
         // Set the main play game drawer view
-        chickenInvadersView = new ChickenInvadersView(this, nickname);
+        chickenInvadersView = new ChickenInvadersView(this, nickname, lanes);
         setContentView(chickenInvadersView);
     }
 
@@ -45,6 +47,12 @@ public class GameActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         chickenInvadersView.resume();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        chickenInvadersView.pause();
     }
 
     // Set window layout
@@ -72,9 +80,12 @@ public class GameActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int id) {
                         ChickenInvadersView.stopMusic();
                         chickenInvadersView.pause();
-                        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                        //Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                        //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                        //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         finish();
-                        startActivity(intent);
+                        //navigateUpTo(new Intent(getBaseContext(),LoginActivity.class));
+                       //startActivity(intent);
                     }
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {

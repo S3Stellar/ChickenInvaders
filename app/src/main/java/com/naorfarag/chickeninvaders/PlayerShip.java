@@ -68,9 +68,9 @@ public class PlayerShip {
 
 
         //adding top, left, bottom and right to the rect object
-        detectCollision.left = x + 40;
+        detectCollision.left = x + 26;
         detectCollision.top = y + 50;
-        detectCollision.right = x + bitmap.getWidth() - 40;
+        detectCollision.right = x + bitmap.getWidth() - 26;
         detectCollision.bottom = y + bitmap.getHeight() - 70;
 
     }

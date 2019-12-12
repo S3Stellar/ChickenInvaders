@@ -26,18 +26,26 @@ public class Invader {
     private Random rand = new Random();
     private TypedArray chickenImages;
     private Context context;
+    private int xCoordinate;
 
-    public Invader(Context context, int screenX, int screenY) {
+    public Invader(Context context, int screenX, int screenY, int xCoordinate) {
         this.context = context;
+        this.xCoordinate = xCoordinate;
         chickenImages = context.getResources().obtainTypedArray(R.array.chickenimages);
         changeChickenImage();
         maxX = screenX;
         maxY = screenY;
 
-        Random generator = new Random();
-        speed = generator.nextInt(5) + 8;
-        y =0;
-        x = rand.nextInt(maxX-bitmap.getWidth()) + bitmap.getWidth()/10;
+        speed = rand.nextInt(5) + 8;
+        y = -bitmap.getHeight();
+        //x = rand.nextInt(maxX-bitmap.getWidth()) + bitmap.getWidth()/10;
+
+        // Randomly show or not on lane
+        if (rand.nextInt(5)>2) {
+            x = -650;
+        } else {
+            x = xCoordinate;
+        }
 
         // Initialize rect object
         detectCollision = new Rect(x, y, bitmap.getWidth(), bitmap.getHeight());
@@ -56,14 +64,20 @@ public class Invader {
             changeChickenImage();
             speed = rand.nextInt(10) + 10;
             y = 0;
-            x = rand.nextInt(maxX-bitmap.getWidth()) + bitmap.getWidth()/10;
+
+            if (rand.nextInt(5)>2) {
+                x = -650;
+            } else {
+                x = xCoordinate;
+            }
+            //x = rand.nextInt(maxX-bitmap.getWidth()) + bitmap.getWidth()/10;
         }
 
         // Adding the top, left, bottom and right to the rect object
         detectCollision.left = x;
-        detectCollision.top = y+bitmap.getHeight()/4;
+        detectCollision.top = y + bitmap.getHeight() / 4;
         detectCollision.right = x + bitmap.getWidth();
-        detectCollision.bottom = y + bitmap.getHeight()/2;
+        detectCollision.bottom = y + bitmap.getHeight() / 2;
     }
 
 

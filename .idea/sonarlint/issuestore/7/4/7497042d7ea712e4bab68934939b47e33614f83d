@@ -1,15 +1,16 @@
 
-osquid:CommentedOutCodeLineð"<This block of commented-out lines of code should be removed.(¢öžÍýÿÿÿÿ8’à¢’ì-
-osquid:CommentedOutCodeLine×"<This block of commented-out lines of code should be removed.(èÞòÊùÿÿÿÿ8úÀ¾–ì-
-squid:S1450H"\Remove the "timeThisFrame" field and declare it as a local variable in the relevant methods.(œ†·Áûÿÿÿÿ8âÑÔ¨è-
-jsquid:CommentedOutCodeLineè"<This block of commented-out lines of code should be removed.(±–µ“8ìî¼–ì-
-jsquid:CommentedOutCodeLineå"<This block of commented-out lines of code should be removed.(ƒ–âé8óã¾–ì-
-qsquid:S3776ì"RRefactor this method to reduce its Cognitive Complexity from 19 to the 15 allowed.(‰¢í8’à¢’ì-
-Ysquid:S2209â"5Change this instance-reference to a static reference.(Úëè×ýÿÿÿÿ8”Òî•ì-
-jsquid:CommentedOutCodeLineø"<This block of commented-out lines of code should be removed.(¾Ç õ8åãð•ì-
-Tsquid:S2209Ú"5Change this instance-reference to a static reference.(Ë²í»8’à¢’ì-
-Gsquid:S3010‰"(Remove this assignment of "gameOnSound".(Ùˆº8’à¢’ì-
-]"squid:SwitchLastCaseIsDefaultCheck×""Add a default case to this switch.(óæÅþÿÿÿÿ8’à¢’ì-
-Tsquid:S2209ä"5Change this instance-reference to a static reference.( ®Õß8”Òî•ì-
-ssquid:S1450""URemove the "canvas" field and declare it as a local variable in the relevant methods.(ŠïïŽ8‹ú˜Õê-
-ssquid:S00116/"TRename this field "stars_num" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(©ßŽü8³«ãÑê-
+osquid:CommentedOutCodeLineõ"<This block of commented-out lines of code should be removed.(ÔˆŸÜýÿÿÿÿ8®¸Í¿î-
+]"squid:SwitchLastCaseIsDefaultCheckÚ""Add a default case to this switch.(óæÅþÿÿÿÿ8ÜÎ‰àí-
+xsquid:S001164"TRename this field "stars_num" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(‹Ñ¥üÿÿÿÿ8ÜÎ‰àí-
+qsquid:S3776î"RRefactor this method to reduce its Cognitive Complexity from 19 to the 15 allowed.(‰¢í8ÜÎ‰àí-
+squid:S1450L"\Remove the "timeThisFrame" field and declare it as a local variable in the relevant methods.(œ†·Áûÿÿÿÿ8ÜÎ‰àí-
+nsquid:CommentedOutCodeLiner"<This block of commented-out lines of code should be removed.(ŒªÁØüÿÿÿÿ8ÜÎ‰àí-
+osquid:CommentedOutCodeLineò"<This block of commented-out lines of code should be removed.(¢öžÍýÿÿÿÿ8ÜÎ‰àí-
+jsquid:CommentedOutCodeLineë"<This block of commented-out lines of code should be removed.(±–µ“8àˆîàí-
+osquid:CommentedOutCodeLineˆ"<This block of commented-out lines of code should be removed.(œÄÆ·øÿÿÿÿ8ÜÎ‰àí-
+qsquid:S3776Æ"RRefactor this method to reduce its Cognitive Complexity from 17 to the 15 allowed.(¸ñ®Æ8ÜÎ‰àí-
+®squid:S18457"ŠRename field "score" to prevent any misunderstanding/clash with field "SCORE" defined in interface "com.naorfarag.chickeninvaders.Finals".(µŽ¼æÿÿÿÿÿ8ÜÎ‰àí-
+Gsquid:S3010“"(Remove this assignment of "gameOnSound".(Ùˆº8ÜÎ‰àí-
+nsquid:CommentedOutCodeLineV"<This block of commented-out lines of code should be removed.(ÏÚ«„ûÿÿÿÿ8ÜÎ‰àí-
+isquid:S2259ó"JA "NullPointerException" could be thrown; "getActivity()" can return null.(ÛÁ€¸8¬žÍ¿î-
+ssquid:S1450'"URemove the "canvas" field and declare it as a local variable in the relevant methods.(ŠïïŽ8ÜÎ‰àí-
