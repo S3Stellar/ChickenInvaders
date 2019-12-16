@@ -1,24 +1,42 @@
 package com.naorfarag.chickeninvaders;
 
-interface Finals {
+public final class Finals {
 
-    int MAX_LIFE = 3;
-    int MAX_SCORE = 9999;
-    //int ENEMIES_COUNT = 3;
-    int STARS_COUNT = 100;
-    int HIGH_SCORE_COUNT = 4;
+    public static final int MAX_LIFE = 3;
+    public static final int MAX_SCORE = 9999;
+    public static final int STARS_COUNT = 100;
+    public static final int HIGH_SCORE_COUNT = 4;
+    public static final int EGG_BONUS = 10;
+    public static final int SHIP_SPEED = 1000;
+
+    public static final int OUT_OF_BOUNDS = -650;
+    public static final int MAX_VOLUME = 1;
+
+    public static final int DEFAULT_LANES = 4;
+    public static final int MAX_LANES = 8;
+    public static final int MIN_LANES = 3;
+
+    public static final String SHARED_PREF = "SHARED_PREF_NAME";
+    public static final String LANES = "lanes";
+    public static final String SCORE = "score";
+    public static final String IS_TILT = "isTilt";
+    public static final String NICKNAME = "nickname";
+
+    public static final String PLAY_AGAIN = "Click to play again!";
+    public static final String ARIAL_FONT = "Arial";
+
+    public static final String INST_MSG1 = "Click left side of the screen to move left\n";
+    public static final String INST_MSG2 = "Click right side of the screen to move right";
+    public static final String EXIT_CHECK_MSG = "Are you sure you want to exit?";
+    public static final String YES = "Yes";
+    public static final String NO = "No";
+    public static final String INSANE = "Insane";
+    public static final String EASY = "Easy";
+    public static final String SETTINGS_TITLE = "Settings";
+    public static final String OK = "Ok";
 
 
-    String SHARED_PREF = "SHARED_PREF_NAME";
-    String SCORE = "score";
-    String NICKNAME = "nickname";
-
-    String PLAY_AGAIN = "Click to play again!";
-    String ARIAL_FONT = "Arial";
-
-    int OUT_OF_BOUNDS = -650;
-
-    enum HOF_RANKS {
+    public enum HOF_RANKS {
         FIRST("First : "), SECOND("Second : "), THIRD("Third : "), FOURTH("Fourth : ");
         private String rank;
 

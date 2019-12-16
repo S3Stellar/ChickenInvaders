@@ -5,31 +5,26 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.media.MediaPlayer;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.SeekBar;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity implements SettingsDialog.DialogListener {
 
     private MediaPlayer loginSound;
-    private SeekBar seekBar;
+    private int lanesAmount = Finals.DEFAULT_LANES;
+    private boolean isTilt = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        seekBar = new SeekBar(getApplicationContext());
-        seekBar.setProgress(4);
         loginSound = MediaPlayer.create(getApplicationContext(), R.raw.gameon);
         loginSound.setLooping(true);
         loginSound.start();
@@ -38,21 +33,22 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void onButton(View view) {
-
         // Settings Icon Clicked
         if (view == findViewById(R.id.settingsIcon)) {
-            chooseLanes();
+            settingsDialog();
         }
+
         // Start button Clicked
         if (view == findViewById(R.id.startButton)) {
-            // Send nickname to game manager
+            // Send details to game manager
             Intent intent = new Intent(getApplicationContext(), GameActivity.class);
-            intent.putExtra("nickname", ((EditText) findViewById(R.id.nickText)).getText().toString());
-            intent.putExtra("lanes", seekBar.getProgress());
+            intent.putExtra(Finals.NICKNAME, ((EditText) findViewById(R.id.nickText)).getText().toString());
+            intent.putExtra(Finals.LANES, lanesAmount);
+            intent.putExtra(Finals.IS_TILT, isTilt);
 
             // Pop game play keys
-            Toast.makeText(getApplicationContext(), "Click left side of the screen to move left\n" +
-                    "Click right side of the screen to move right", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), Finals.INST_MSG1 +
+                    Finals.INST_MSG2, Toast.LENGTH_LONG).show();
 
             // Start the game
             loginSound.seekTo(0);
@@ -64,29 +60,10 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(new Intent(this, HighScore.class));
     }
 
-    public void chooseLanes() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Lane's amount : ");
-        seekBar.setMax(8);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            seekBar.setMin(3);
-        }
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT);
-        seekBar.setLayoutParams(lp);
-        builder.setView(seekBar);
-        builder.setCancelable(false);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                Toast.makeText(getApplicationContext(), "Chicken's amount " + seekBar.getProgress(), Toast.LENGTH_SHORT).show();
-            }
-        });
-        if (seekBar.getParent() != null) {
-            ((ViewGroup) seekBar.getParent()).removeView(seekBar); // <- fix reenter dialog few times
-        }
-        builder.show();
+
+    public void settingsDialog() {
+        SettingsDialog settingsDialog = new SettingsDialog();
+        settingsDialog.show(getSupportFragmentManager(), "Settings dialog");
     }
 
     @Override
@@ -106,9 +83,9 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Are you sure you want to exit?")
+        builder.setMessage(Finals.EXIT_CHECK_MSG)
                 .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                .setPositiveButton(Finals.YES, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         stopMusic();
                         Intent startMain = new Intent(Intent.ACTION_MAIN);
@@ -118,7 +95,7 @@ public class LoginActivity extends AppCompatActivity {
                         finish();
                     }
                 })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                .setNegativeButton(Finals.NO, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         loginSound.start();
                         dialog.cancel();
@@ -164,7 +141,7 @@ public class LoginActivity extends AppCompatActivity {
         InputMethodManager imm = (InputMethodManager) this.getSystemService(Activity.INPUT_METHOD_SERVICE);
         View view = this.getCurrentFocus();
         if (imm != null) {
-            imm.hideSoftInputFromWindow(view != null ? view.getWindowToken() : null,0);
+            imm.hideSoftInputFromWindow(view != null ? view.getWindowToken() : null, 0);
         }
         return super.onTouchEvent(event);
     }
@@ -173,5 +150,11 @@ public class LoginActivity extends AppCompatActivity {
     public void onDestroy() {
         stopMusic();
         super.onDestroy();
+    }
+
+    @Override
+    public void applySettings(int lanesAmount, boolean isTilt) {
+        this.lanesAmount = lanesAmount;
+        this.isTilt = isTilt;
     }
 }

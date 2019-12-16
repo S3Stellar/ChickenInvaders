@@ -82,3 +82,7 @@ Y
 )app/src/main/res/drawable/buttonshape.xml,4\b\4b7bfbdee25aa310ab3c859179ecb0eccc7c1671
 d
 4app/src/main/res/drawable/ic_launcher_foreground.xml,5\8\587f297f0f0eaa1dcf927b2b5f0bc5430fadf54f
+h
+8app/src/main/java/com/naorfarag/chickeninvaders/Egg.java,0\a\0abf8d4964a23fa65c14433358732e97644ecc94
+s
+Capp/src/main/java/com/naorfarag/chickeninvaders/SettingsDialog.java,5\5\551554091f0740274a92e5d5b74c6be9922ba06e

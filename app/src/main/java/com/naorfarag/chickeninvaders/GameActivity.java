@@ -1,6 +1,5 @@
 package com.naorfarag.chickeninvaders;
 
-
 import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
@@ -8,6 +7,8 @@ import android.view.View;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.github.nisrulz.sensey.Sensey;
 
 
 public class GameActivity extends AppCompatActivity {
@@ -23,14 +24,16 @@ public class GameActivity extends AppCompatActivity {
 
         // Get username
         String nickname = "";
-        int lanes=3;
+        int lanes = Finals.DEFAULT_LANES;
+        boolean isTilt = false;
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
-            nickname = bundle.getString("nickname");
-            lanes = bundle.getInt("lanes");
+            nickname = bundle.getString(Finals.NICKNAME);
+            lanes = bundle.getInt(Finals.LANES);
+            isTilt = bundle.getBoolean(Finals.IS_TILT);
         }
         // Set the main play game drawer view
-        chickenInvadersView = new ChickenInvadersView(this, nickname, lanes);
+        chickenInvadersView = new ChickenInvadersView(this, nickname, lanes, isTilt);
         setContentView(chickenInvadersView);
     }
 
@@ -74,21 +77,16 @@ public class GameActivity extends AppCompatActivity {
     public void onBackPressed() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         chickenInvadersView.playing = false;
-        builder.setMessage("Are you sure you want to exit?")
+        builder.setMessage(Finals.EXIT_CHECK_MSG)
                 .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                .setPositiveButton(Finals.YES, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         ChickenInvadersView.stopMusic();
                         chickenInvadersView.pause();
-                        //Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                        //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                        //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         finish();
-                        //navigateUpTo(new Intent(getBaseContext(),LoginActivity.class));
-                       //startActivity(intent);
                     }
                 })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                .setNegativeButton(Finals.NO, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         chickenInvadersView.resume();
                         dialog.cancel();
@@ -96,6 +94,12 @@ public class GameActivity extends AppCompatActivity {
                 });
         AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Sensey.getInstance().stop();
     }
 }
 

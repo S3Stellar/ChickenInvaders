@@ -20,6 +20,8 @@ android {
 }
 
 dependencies {
+    implementation 'com.github.nisrulz:sensey:1.8.0'
+    implementation 'com.github.florent37:android-slidr:1.0.3'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'

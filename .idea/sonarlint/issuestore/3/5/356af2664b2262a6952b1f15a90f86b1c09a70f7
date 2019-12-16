@@ -1,2 +1,6 @@
 
-qsquid:MaximumInheritanceDepth"<This class has 6 parents which is greater than 5 authorized.(·¡ïõøÿÿÿÿ8©¶·íé-
+nsquid:CommentedOutCodeLine+"<This block of commented-out lines of code should be removed.(ê‹˜¾ÿÿÿÿÿ8ƒ‡ˆ¹ð-
+isquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(¬ô¦Ü8Ñè¹ºð-
+nsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(üûÓ˜ýÿÿÿÿ8á„ººð-
+isquid:CommentedOutCodeLineD"<This block of commented-out lines of code should be removed.(ö¡†¥8 ‘¹ºð-
+qsquid:MaximumInheritanceDepth"<This class has 6 parents which is greater than 5 authorized.(éû·ùýÿÿÿÿ8©¶·íé-

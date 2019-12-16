@@ -1,16 +1,20 @@
 
-osquid:CommentedOutCodeLineõ"<This block of commented-out lines of code should be removed.(ÔˆŸÜýÿÿÿÿ8®¸Í¿î-
-]"squid:SwitchLastCaseIsDefaultCheckÚ""Add a default case to this switch.(óæÅþÿÿÿÿ8ÜÎ‰àí-
-xsquid:S001164"TRename this field "stars_num" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(‹Ñ¥üÿÿÿÿ8ÜÎ‰àí-
-qsquid:S3776î"RRefactor this method to reduce its Cognitive Complexity from 19 to the 15 allowed.(‰¢í8ÜÎ‰àí-
-squid:S1450L"\Remove the "timeThisFrame" field and declare it as a local variable in the relevant methods.(œ†·Áûÿÿÿÿ8ÜÎ‰àí-
-nsquid:CommentedOutCodeLiner"<This block of commented-out lines of code should be removed.(ŒªÁØüÿÿÿÿ8ÜÎ‰àí-
-osquid:CommentedOutCodeLineò"<This block of commented-out lines of code should be removed.(¢öžÍýÿÿÿÿ8ÜÎ‰àí-
-jsquid:CommentedOutCodeLineë"<This block of commented-out lines of code should be removed.(±–µ“8àˆîàí-
-osquid:CommentedOutCodeLineˆ"<This block of commented-out lines of code should be removed.(œÄÆ·øÿÿÿÿ8ÜÎ‰àí-
-qsquid:S3776Æ"RRefactor this method to reduce its Cognitive Complexity from 17 to the 15 allowed.(¸ñ®Æ8ÜÎ‰àí-
-®squid:S18457"ŠRename field "score" to prevent any misunderstanding/clash with field "SCORE" defined in interface "com.naorfarag.chickeninvaders.Finals".(µŽ¼æÿÿÿÿÿ8ÜÎ‰àí-
-Gsquid:S3010“"(Remove this assignment of "gameOnSound".(Ùˆº8ÜÎ‰àí-
-nsquid:CommentedOutCodeLineV"<This block of commented-out lines of code should be removed.(ÏÚ«„ûÿÿÿÿ8ÜÎ‰àí-
-isquid:S2259ó"JA "NullPointerException" could be thrown; "getActivity()" can return null.(ÛÁ€¸8¬žÍ¿î-
-ssquid:S1450'"URemove the "canvas" field and declare it as a local variable in the relevant methods.(ŠïïŽ8ÜÎ‰àí-
+wsquid:UselessImportCheck"LRemove this unused import 'com.github.nisrulz.sensey.RotationAngleDetector'.(í€Ë„8†˜éÌð-
+xsquid:S00116@"TRename this field "stars_num" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(‹Ñ¥üÿÿÿÿ8áÉ»½ð-
+]"squid:SwitchLastCaseIsDefaultCheckË""Add a default case to this switch.(óæÅþÿÿÿÿ8Š˜ˆÍð-
+dsquid:UselessImportCheck"4Remove this unused import 'android.hardware.Sensor'.(á¥ý”úÿÿÿÿ8†˜éÌð-
+nsquid:CommentedOutCodeLineb"<This block of commented-out lines of code should be removed.(ÏÚ«„ûÿÿÿÿ8áÉ»½ð-
+osquid:CommentedOutCodeLine¬"<This block of commented-out lines of code should be removed.(ŒªÁØüÿÿÿÿ8Š˜ˆÍð-
+qsquid:S3776„"RRefactor this method to reduce its Cognitive Complexity from 26 to the 15 allowed.(¸ñ®Æ8Š˜ˆÍð-
+qsquid:UselessImportCheck"ARemove this unused import 'android.hardware.SensorEventListener'.(ëƒÃ×þÿÿÿÿ8‚¶çÌð-
+ksquid:UselessImportCheck";Remove this unused import 'android.hardware.SensorManager'.(ªè½ôûÿÿÿÿ8†˜éÌð-
+qsquid:S3776Ì"RRefactor this method to reduce its Cognitive Complexity from 19 to the 15 allowed.(‰¢í8Š˜ˆÍð-
+®squid:S1845C"ŠRename field "score" to prevent any misunderstanding/clash with field "SCORE" defined in interface "com.naorfarag.chickeninvaders.Finals".(µŽ¼æÿÿÿÿÿ8áÉ»½ð-
+Gsquid:S3010Ñ"(Remove this assignment of "gameOnSound".(Ùˆº8Š˜ˆÍð-
+osquid:CommentedOutCodeLine¸"<This block of commented-out lines of code should be removed.(Êž²­ùÿÿÿÿ8Š˜ˆÍð-
+hsquid:S2259ê"IA "NullPointerException" could be thrown; "gameOnSound" is nullable here.(¨þÂš8Š˜ˆÍð-
+ssquid:S14502"URemove the "canvas" field and declare it as a local variable in the relevant methods.(ŠïïŽ8áÉ»½ð-
+usquid:S3776~"RRefactor this method to reduce its Cognitive Complexity from 29 to the 15 allowed.(ŒõÍìüÿÿÿÿ8ùÈ®Íð-
+dsquid:UselessImportCheck"9Remove this unused import 'android.hardware.SensorEvent'.(•Á¸è8‚¶çÌð-
+squid:S1450X"\Remove the "timeThisFrame" field and declare it as a local variable in the relevant methods.(œ†·Áûÿÿÿÿ8áÉ»½ð-
+osquid:CommentedOutCodeLineÐ"<This block of commented-out lines of code should be removed.(¢öžÍýÿÿÿÿ8Š˜ˆÍð-

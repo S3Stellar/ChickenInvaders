@@ -31,6 +31,6 @@ public class PlayerNickScore implements Comparable<PlayerNickScore> {
 
     @Override
     public int compareTo(PlayerNickScore o) {
-        return ((Integer) o.score).compareTo(this.score);
+        return Integer.compare(o.score, this.score);
     }
 }

@@ -28,10 +28,10 @@ public class PlayerShip {
     private Rect detectCollision;
 
     public PlayerShip(Context context, int screenX, int screenY) {
-        x = screenX / 2 - 100;
-        y = screenY - 400;
 
         bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.spaceship);
+        x = screenX / 2 - bitmap.getWidth() / 2;
+        y = screenY - bitmap.getHeight() * 2;
 
         maxY = screenY - bitmap.getHeight();
         maxX = screenX - bitmap.getWidth();
@@ -40,7 +40,7 @@ public class PlayerShip {
         // Initializing rect object
         detectCollision = new Rect(x, y, bitmap.getWidth(), bitmap.getHeight());
         // How fast is the spaceship in pixels per second
-        shipSpeed = 1000;
+        shipSpeed = Finals.SHIP_SPEED;
     }
 
     // This method will be used to change/set if the paddle is going left, right or nowhere
@@ -51,7 +51,6 @@ public class PlayerShip {
     public void update(long fps) {
         if (shipMoving == LEFT)
             x = (int) (x - shipSpeed / fps);
-
 
         if (shipMoving == RIGHT)
             x = (int) (x + shipSpeed / fps);
@@ -66,13 +65,11 @@ public class PlayerShip {
             x = minX;
         }
 
-
-        //adding top, left, bottom and right to the rect object
+        // Adding top, left, bottom and right to the rect object
         detectCollision.left = x + 26;
         detectCollision.top = y + 50;
         detectCollision.right = x + bitmap.getWidth() - 26;
         detectCollision.bottom = y + bitmap.getHeight() - 70;
-
     }
 
     //one more getter for getting the rect object

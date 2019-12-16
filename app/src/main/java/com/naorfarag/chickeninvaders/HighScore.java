@@ -2,6 +2,7 @@ package com.naorfarag.chickeninvaders;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -9,23 +10,24 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 
-public class HighScore extends AppCompatActivity implements Finals {
+public class HighScore extends AppCompatActivity {
 
-
-    private TextView[] textViews = new TextView[HIGH_SCORE_COUNT];
-    private SharedPreferences sharedPreferences;
+    private TextView[] textViews = new TextView[Finals.HIGH_SCORE_COUNT];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_high_score);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-        HOF_RANKS[] hof_ranks = HOF_RANKS.values();
-        sharedPreferences = getSharedPreferences(SHARED_PREF, Context.MODE_PRIVATE);
-        for (int i = 0; i < HIGH_SCORE_COUNT; i++) {
+        Finals.HOF_RANKS[] hofRanks = Finals.HOF_RANKS.values();
+        SharedPreferences sharedPreferences = getSharedPreferences(Finals.SHARED_PREF, Context.MODE_PRIVATE);
+        for (int i = 0; i < Finals.HIGH_SCORE_COUNT; i++) {
             // Initialize all textViews - textView00, textView01 ..
             textViews[i] = findViewById(getResources().getIdentifier("textView0" + i, "id", getPackageName()));
-            textViews[i].setText(hof_ranks[i].getRank() + sharedPreferences.getInt(SCORE + i, 0) + ", " + sharedPreferences.getString(NICKNAME + i, ""));
+            textViews[i].setText(hofRanks[i].getRank() + sharedPreferences.getInt
+                    (Finals.SCORE + i, 0) + ", " + sharedPreferences.getString
+                    (Finals.NICKNAME + i, ""));
         }
     }
 

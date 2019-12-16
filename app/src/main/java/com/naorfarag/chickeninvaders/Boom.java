@@ -11,8 +11,8 @@ public class Boom {
     private Bitmap bitmap;
 
     //coordinate variables
-    private int x;
-    private int y;
+    private float x;
+    private float y;
 
     //constructor
     public Boom(Context context) {
@@ -23,17 +23,17 @@ public class Boom {
         //setting the coordinate outside the screen
         //so that it won't shown up in the screen
         //it will be only visible for a fraction of second
-        //after collission
-        x = -650;
-        y = -650;
+        //after collision
+        x = Finals.OUT_OF_BOUNDS;
+        y = Finals.OUT_OF_BOUNDS;
     }
 
     // Setters for x and y to make it visible at the place of collision
-    public void setX(int x) {
+    public void setX(float x) {
         this.x = x;
     }
 
-    public void setY(int y) {
+    public void setY(float y) {
         this.y = y;
     }
 
@@ -42,15 +42,11 @@ public class Boom {
         return bitmap;
     }
 
-    public void setBitmap(Bitmap bitmap) {
-        this.bitmap = bitmap;
-    }
-
-    public int getX() {
+    public float getX() {
         return x;
     }
 
-    public int getY() {
+    public float getY() {
         return y;
     }
 

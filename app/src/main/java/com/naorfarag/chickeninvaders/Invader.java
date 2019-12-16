@@ -12,15 +12,14 @@ import java.util.Random;
 public class Invader {
 
     private Bitmap bitmap;
-    private int x;
-    private int y;
-    private int speed;
+    private float x;
+    private float y;
+
+    private float speed;
 
     private int maxX;
     private int maxY;
 
-
-    //creating a rect object for a friendly ship
     private Rect detectCollision;
 
     private Random rand = new Random();
@@ -38,18 +37,14 @@ public class Invader {
 
         speed = rand.nextInt(5) + 8;
         y = -bitmap.getHeight();
-        //x = rand.nextInt(maxX-bitmap.getWidth()) + bitmap.getWidth()/10;
 
         // Randomly show or not on lane
-        if (rand.nextInt(5)>2) {
-            x = -650;
-        } else {
-            x = xCoordinate;
-        }
+        raffleInvaderShow();
 
         // Initialize rect object
-        detectCollision = new Rect(x, y, bitmap.getWidth(), bitmap.getHeight());
+        detectCollision = new Rect((int) x, (int) y, bitmap.getWidth(), bitmap.getHeight());
     }
+
 
     private void changeChickenImage() {
         final int rndInt = rand.nextInt(chickenImages.length());
@@ -65,21 +60,24 @@ public class Invader {
             speed = rand.nextInt(10) + 10;
             y = 0;
 
-            if (rand.nextInt(5)>2) {
-                x = -650;
-            } else {
-                x = xCoordinate;
-            }
-            //x = rand.nextInt(maxX-bitmap.getWidth()) + bitmap.getWidth()/10;
+            raffleInvaderShow();
         }
 
         // Adding the top, left, bottom and right to the rect object
-        detectCollision.left = x;
-        detectCollision.top = y + bitmap.getHeight() / 4;
-        detectCollision.right = x + bitmap.getWidth();
-        detectCollision.bottom = y + bitmap.getHeight() / 2;
+        detectCollision.left = (int) x;
+        detectCollision.top = (int) y + bitmap.getHeight() / 4;
+        detectCollision.right = (int) x + bitmap.getWidth();
+        detectCollision.bottom = (int) y + bitmap.getHeight() / 2;
     }
 
+
+    private void raffleInvaderShow() {
+        if (rand.nextInt(5) > 2) {
+            x = Finals.OUT_OF_BOUNDS;
+        } else {
+            x = xCoordinate;
+        }
+    }
 
     // One more getter for getting the rect object
     public Rect getDetectCollision() {
@@ -91,15 +89,26 @@ public class Invader {
         return bitmap;
     }
 
-    public int getX() {
+    public float getX() {
         return x;
     }
 
-    public int getY() {
+    public float getY() {
         return y;
     }
 
     public void setY(int y) {
         this.y = y;
+    }
+
+    public float getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(float speed) {
+        if (speed < rand.nextInt(5) + 8)
+            this.speed = rand.nextInt(5) + 8;
+        else
+            this.speed = speed;
     }
 }

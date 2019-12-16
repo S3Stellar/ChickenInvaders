@@ -2,12 +2,11 @@ package com.naorfarag.chickeninvaders;
 
 import java.util.Random;
 
-
 public class Star {
+
     private int x;
     private int y;
     private int speed;
-
     private int maxX;
     private int maxY;
     private Random generator = new Random();
