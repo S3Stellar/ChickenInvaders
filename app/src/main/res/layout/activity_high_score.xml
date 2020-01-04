@@ -5,33 +5,33 @@
     android:id="@+id/activity_high_score"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/gamebackground"
     android:gravity="center_horizontal"
-    android:paddingTop="150dp"
     android:orientation="vertical"
-    tools:context=".HighScore"
-    android:background="@drawable/gamebackground">
+    tools:context=".HighScore">
 
     <ImageView
-        tools:ignore="ContentDescription"
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
-        android:layout_marginTop="-65dp"
+        android:layout_marginTop="-20dp"
         android:layout_marginRight="20dp"
+        android:layout_marginBottom="-20dp"
         android:baselineAlignBottom="false"
-        app:srcCompat="@drawable/halloffame_banner" />
+        app:srcCompat="@drawable/halloffame_banner"
+        tools:ignore="ContentDescription" />
 
     <TextView
 
         android:id="@+id/textView00"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
+        android:layout_margin="5dp"
         android:fontFamily="monospace"
         android:gravity="center"
+        android:onClick="onHighScoreClicked"
         android:padding="10dp"
-        android:textAlignment="center"
         android:textColor="@android:color/white"
         android:textSize="22sp" />
 
@@ -41,10 +41,11 @@
         android:id="@+id/textView01"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
+        android:layout_margin="5dp"
         android:fontFamily="monospace"
         android:gravity="center"
         android:includeFontPadding="true"
+        android:onClick="onHighScoreClicked"
         android:padding="10dp"
         android:textColor="@android:color/white"
         android:textSize="22sp" />
@@ -54,11 +55,11 @@
         android:id="@+id/textView02"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
+        android:layout_margin="5dp"
         android:fontFamily="monospace"
         android:gravity="center"
+        android:onClick="onHighScoreClicked"
         android:padding="10dp"
-        android:textAlignment="center"
         android:textColor="@android:color/white"
         android:textSize="22sp" />
 
@@ -67,19 +68,43 @@
         android:id="@+id/textView03"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
         android:fontFamily="monospace"
         android:gravity="center"
+        android:onClick="onHighScoreClicked"
         android:padding="10dp"
-        android:textAlignment="center"
         android:textColor="@android:color/white"
         android:textSize="22sp" />
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="15dp"
+        android:layout_weight="2">
+
+        <fragment
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="4dp"
+            android:layout_marginStart="3dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginEnd="3dp"
+            android:layout_marginBottom="3dp" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/gmapFrame"
+            android:src="@drawable/map_rounded_corner_overlay" />
+    </RelativeLayout>
 
     <Button
         android:id="@+id/startButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginBottom="5dp"
         android:backgroundTint="#362F4BFA"
         android:onClick="onBack"
         android:text="@string/back"

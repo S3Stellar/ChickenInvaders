@@ -5,4 +5,6 @@
     <string name="background_image">Background image</string>
     <string name="hallOfFame">Hall of fame</string>
     <string name="back">BACK</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="gmapFrame">TODO</string>
 </resources>

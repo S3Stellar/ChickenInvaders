@@ -15,6 +15,10 @@ public final class Finals {
     public static final int DEFAULT_LANES = 4;
     public static final int MAX_LANES = 8;
     public static final int MIN_LANES = 3;
+    public static final int PERMISSION_ID = 44;
+
+    public static final String LATITUDE = "LATITUDE";
+    public static final String LONGITUDE = "LONGITUDE";
 
     public static final String SHARED_PREF = "SHARED_PREF_NAME";
     public static final String LANES = "lanes";

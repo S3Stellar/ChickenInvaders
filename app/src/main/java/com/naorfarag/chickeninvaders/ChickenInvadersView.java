@@ -61,7 +61,7 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
     private int lives = Finals.MAX_LIFE;
 
     // The high Scores Holder
-    private ArrayList<PlayerNickScore> gameScores = new ArrayList<>();
+    private ArrayList<PlayerAttributes> gameScores = new ArrayList<>();
 
     // Shared Preferences to store the High Scores
     private SharedPreferences sharedPreferences;
@@ -111,8 +111,14 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
     // Tilt device listener
     private TiltDirectionDetector.TiltDirectionListener tiltDirectionListener;
 
-    public ChickenInvadersView(Context context, String nickname, int lanes, boolean isTilt) {
+    // Player's GPS location
+    private double longitude;
+    private double latitude;
+
+    public ChickenInvadersView(Context context, String nickname, int lanes, boolean isTilt, double latitude, double longitude) {
         super(context);
+        this.latitude = latitude;
+        this.longitude = longitude;
         this.context = context;
         this.playerNickname = nickname;
         this.enemyCount = lanes;
@@ -190,8 +196,17 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
 
         // Initialize existing highScore
         for (int i = 0; i < Finals.HIGH_SCORE_COUNT; i++) {
-            gameScores.add(new PlayerNickScore(sharedPreferences.getInt(Finals.SCORE + i, 0)
-                    , sharedPreferences.getString(Finals.NICKNAME + i, "")));
+            double longitude;
+            double latitude;
+            try {
+                longitude = Double.parseDouble(sharedPreferences.getString(Finals.LONGITUDE + i, ""));
+                latitude = Double.parseDouble(sharedPreferences.getString(Finals.LATITUDE + i, ""));
+            } catch (Exception e) {
+                longitude = 0;
+                latitude = 0;
+            }
+            gameScores.add(new PlayerAttributes(sharedPreferences.getInt(Finals.SCORE + i, 0),
+                    sharedPreferences.getString(Finals.NICKNAME + i, ""), longitude, latitude));
         }
     }
 
@@ -476,6 +491,8 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
             if (gameScores.get(i).getScore() < playerScore) {
                 gameScores.get(i).setScore(playerScore);
                 gameScores.get(i).setNickname(playerNickname);
+                gameScores.get(i).setLatitude(latitude);
+                gameScores.get(i).setLongitude(longitude);
                 break;
             }
         }
@@ -488,6 +505,8 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
         for (int i = 0; i < Finals.HIGH_SCORE_COUNT; i++) {
             e.putInt(Finals.SCORE + i, gameScores.get(i).getScore());
             e.putString(Finals.NICKNAME + i, gameScores.get(i).getNickname());
+            e.putString(Finals.LONGITUDE + i, gameScores.get(i).getLongitude() + "");
+            e.putString(Finals.LATITUDE + i, gameScores.get(i).getLatitude() + "");
         }
         e.apply();
     }

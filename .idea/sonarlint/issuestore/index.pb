@@ -86,3 +86,5 @@ h
 8app/src/main/java/com/naorfarag/chickeninvaders/Egg.java,0\a\0abf8d4964a23fa65c14433358732e97644ecc94
 s
 Capp/src/main/java/com/naorfarag/chickeninvaders/SettingsDialog.java,5\5\551554091f0740274a92e5d5b74c6be9922ba06e
+[
++app/src/main/res/layout/settings_layout.xml,d\b\db32dcb936063b831fdcdf3afd33040dd83da3b2

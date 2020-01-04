@@ -1,20 +1,3 @@
 
-wsquid:UselessImportCheck"LRemove this unused import 'com.github.nisrulz.sensey.RotationAngleDetector'.(í€Ë„8†˜éÌğ-
-xsquid:S00116@"TRename this field "stars_num" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(‹Ñ¥üÿÿÿÿ8áÉ»½ğ-
-]"squid:SwitchLastCaseIsDefaultCheckË""Add a default case to this switch.(óæÅşÿÿÿÿ8Š˜ˆÍğ-
-dsquid:UselessImportCheck"4Remove this unused import 'android.hardware.Sensor'.(á¥ı”úÿÿÿÿ8†˜éÌğ-
-nsquid:CommentedOutCodeLineb"<This block of commented-out lines of code should be removed.(ÏÚ«„ûÿÿÿÿ8áÉ»½ğ-
-osquid:CommentedOutCodeLine¬"<This block of commented-out lines of code should be removed.(ŒªÁØüÿÿÿÿ8Š˜ˆÍğ-
-qsquid:S3776„"RRefactor this method to reduce its Cognitive Complexity from 26 to the 15 allowed.(¸ñ®Æ8Š˜ˆÍğ-
-qsquid:UselessImportCheck"ARemove this unused import 'android.hardware.SensorEventListener'.(ëƒÃ×şÿÿÿÿ8‚¶çÌğ-
-ksquid:UselessImportCheck";Remove this unused import 'android.hardware.SensorManager'.(ªè½ôûÿÿÿÿ8†˜éÌğ-
-qsquid:S3776Ì"RRefactor this method to reduce its Cognitive Complexity from 19 to the 15 allowed.(‰¢í8Š˜ˆÍğ-
-®squid:S1845C"ŠRename field "score" to prevent any misunderstanding/clash with field "SCORE" defined in interface "com.naorfarag.chickeninvaders.Finals".(µ¼æÿÿÿÿÿ8áÉ»½ğ-
-Gsquid:S3010Ñ"(Remove this assignment of "gameOnSound".(Ùˆº8Š˜ˆÍğ-
-osquid:CommentedOutCodeLine¸"<This block of commented-out lines of code should be removed.(Ê²­ùÿÿÿÿ8Š˜ˆÍğ-
-hsquid:S2259ê"IA "NullPointerException" could be thrown; "gameOnSound" is nullable here.(¨şÂš8Š˜ˆÍğ-
-ssquid:S14502"URemove the "canvas" field and declare it as a local variable in the relevant methods.(Šïï8áÉ»½ğ-
-usquid:S3776~"RRefactor this method to reduce its Cognitive Complexity from 29 to the 15 allowed.(ŒõÍìüÿÿÿÿ8ùÈ®Íğ-
-dsquid:UselessImportCheck"9Remove this unused import 'android.hardware.SensorEvent'.(•Á¸è8‚¶çÌğ-
-squid:S1450X"\Remove the "timeThisFrame" field and declare it as a local variable in the relevant methods.(œ†·Áûÿÿÿÿ8áÉ»½ğ-
-osquid:CommentedOutCodeLineĞ"<This block of commented-out lines of code should be removed.(¢öÍıÿÿÿÿ8Š˜ˆÍğ-
+Gsquid:S3010‰"(Remove this assignment of "gameOnSound".(Ùˆº8¯Á·æğ-
+vsquid:S3776‹"RRefactor this method to reduce its Cognitive Complexity from 21 to the 15 allowed.(”’ßùıÿÿÿÿ8ê×—ùñ-

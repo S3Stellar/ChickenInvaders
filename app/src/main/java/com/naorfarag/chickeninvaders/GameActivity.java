@@ -26,14 +26,20 @@ public class GameActivity extends AppCompatActivity {
         String nickname = "";
         int lanes = Finals.DEFAULT_LANES;
         boolean isTilt = false;
+        double latitude = 0;
+        double longitude = 0;
+
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             nickname = bundle.getString(Finals.NICKNAME);
             lanes = bundle.getInt(Finals.LANES);
             isTilt = bundle.getBoolean(Finals.IS_TILT);
+            latitude = bundle.getDouble(Finals.LATITUDE);
+            longitude = bundle.getDouble(Finals.LONGITUDE);
         }
+
         // Set the main play game drawer view
-        chickenInvadersView = new ChickenInvadersView(this, nickname, lanes, isTilt);
+        chickenInvadersView = new ChickenInvadersView(this, nickname, lanes, isTilt, latitude, longitude);
         setContentView(chickenInvadersView);
     }
 
