@@ -1,2 +1,2 @@
 # ChickenInvaders
-Chicken invaders game, project in android course at Afeka
+A game made in framework of semesterial course of android at Afeka
