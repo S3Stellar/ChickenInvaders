@@ -30,15 +30,8 @@ public class SettingsDialog extends AppCompatDialogFragment {
     private CheckBox checkBox;
     private int progress;
     private Slidr slidr;
-
     private Dialog dialog;
-    static int ui_flags =
-            View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
-                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
-                    View.SYSTEM_UI_FLAG_FULLSCREEN |
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
-                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
-                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+
 
     @NonNull
     @Override
@@ -72,7 +65,7 @@ public class SettingsDialog extends AppCompatDialogFragment {
                             WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
 
             // Set full-sreen mode (immersive sticky):
-            dialog.getWindow().getDecorView().setSystemUiVisibility(ui_flags);
+            dialog.getWindow().getDecorView().setSystemUiVisibility(Finals.UI_FLAGS);
 
             // Show the alertDialog:
             dialog.show();

@@ -1,5 +1,7 @@
 package com.naorfarag.chickeninvaders;
 
+import android.view.View;
+
 public final class Finals {
 
     public static final int MAX_LIFE = 3;
@@ -15,7 +17,16 @@ public final class Finals {
     public static final int DEFAULT_LANES = 4;
     public static final int MAX_LANES = 8;
     public static final int MIN_LANES = 3;
+
     public static final int PERMISSION_ID = 44;
+
+    public static final int UI_FLAGS =
+            View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
+                    View.SYSTEM_UI_FLAG_FULLSCREEN |
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
+                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
+                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
 
     public static final String LATITUDE = "LATITUDE";
     public static final String LONGITUDE = "LONGITUDE";
@@ -36,7 +47,6 @@ public final class Finals {
     public static final String NO = "No";
     public static final String INSANE = "Insane";
     public static final String EASY = "Easy";
-    public static final String SETTINGS_TITLE = "Settings";
     public static final String OK = "Ok";
 
 
