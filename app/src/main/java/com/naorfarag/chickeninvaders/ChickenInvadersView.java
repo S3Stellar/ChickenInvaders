@@ -468,6 +468,8 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
                     break;
             }
         }
+        if(isTilt && paused)
+            paused=false;
         if (gameOver && motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
             stopMusic();
             pause();

@@ -17,6 +17,10 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.Objects;
+
+import hari.bounceview.BounceView;
+
 
 public class HighScore extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -29,6 +33,7 @@ public class HighScore extends AppCompatActivity implements OnMapReadyCallback {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_high_score);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        BounceView.addAnimTo(findViewById(R.id.backButton));
 
         Finals.HOF_RANKS[] hofRanks = Finals.HOF_RANKS.values();
         sharedPreferences = getSharedPreferences(Finals.SHARED_PREF, Context.MODE_PRIVATE);
@@ -39,10 +44,11 @@ public class HighScore extends AppCompatActivity implements OnMapReadyCallback {
             textViews[i].setText(hofRanks[i].getRank() + sharedPreferences.getInt
                     (Finals.SCORE + i, 0) + ", " + sharedPreferences.getString
                     (Finals.NICKNAME + i, ""));
+            BounceView.addAnimTo(textViews[i]);
         }
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        Objects.requireNonNull(mapFragment).getMapAsync(this);
     }
 
     @Override
@@ -83,11 +89,12 @@ public class HighScore extends AppCompatActivity implements OnMapReadyCallback {
         int num = Integer.parseInt(substring);
 
         LatLng playerClicked = getLatLng(num);
+        map.clear();
         map.addMarker(new MarkerOptions().position(playerClicked).title("Your location"));
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(playerClicked, 18.0f));
     }
 
-    public LatLng getLatLng(int index){
+    public LatLng getLatLng(int index) {
         double longitude = 0;
         double latitude = 0;
         try {

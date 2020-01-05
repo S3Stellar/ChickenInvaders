@@ -7,4 +7,6 @@
     <string name="back">BACK</string>
     <string name="title_activity_maps">Map</string>
     <string name="gmapFrame">TODO</string>
+    <string name="tilt_mode">Tilt mode</string>
+    <string name="amount_of_lanes">Amount of lanes:</string>
 </resources>

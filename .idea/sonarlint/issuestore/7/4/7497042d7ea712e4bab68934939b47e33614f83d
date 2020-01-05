@@ -1,3 +1,5 @@
 
-Gsquid:S3010‰"(Remove this assignment of "gameOnSound".(Ùˆº8¯Á·æð-
-vsquid:S3776‹"RRefactor this method to reduce its Cognitive Complexity from 21 to the 15 allowed.(”’ßùýÿÿÿÿ8ê×—ùñ-
+vsquid:S3776š"RRefactor this method to reduce its Cognitive Complexity from 21 to the 15 allowed.(”’ßùýÿÿÿÿ8èÎŒ•÷-
+lsquid:HiddenFieldCheckÈ"=Rename "latitude" which hides the field declared at line 116.(–ÄÍ­úÿÿÿÿ8á¬š•÷-
+Gsquid:S3010"(Remove this assignment of "gameOnSound".(Ùˆº8¯Á·æð-
+hsquid:HiddenFieldCheckÇ">Rename "longitude" which hides the field declared at line 115.(Ð¯ü€8á¬š•÷-

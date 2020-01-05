@@ -33,19 +33,25 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import hari.bounceview.BounceView;
+
 
 public class LoginActivity extends AppCompatActivity implements SettingsDialog.DialogListener {
 
-    private FusedLocationProviderClient mFusedLocationClient;
     private MediaPlayer loginSound;
+
     private int lanesAmount = Finals.DEFAULT_LANES;
     private boolean isTilt = false;
+
+    private FusedLocationProviderClient mFusedLocationClient;
     private double latitude;
     private double longitude;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         getLastLocation();
 
@@ -54,6 +60,11 @@ public class LoginActivity extends AppCompatActivity implements SettingsDialog.D
         loginSound.start();
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_main);
+
+        BounceView.addAnimTo(findViewById(R.id.settingsIcon));
+        BounceView.addAnimTo(findViewById(R.id.startButton));
+        BounceView.addAnimTo(findViewById(R.id.hallOfFame));
+
     }
 
     public void onButton(View view) {
@@ -87,7 +98,7 @@ public class LoginActivity extends AppCompatActivity implements SettingsDialog.D
     }
 
 
-    public void settingsDialog() {
+    public void  settingsDialog() {
         SettingsDialog settingsDialog = new SettingsDialog();
         settingsDialog.show(getSupportFragmentManager(), "Settings dialog");
     }

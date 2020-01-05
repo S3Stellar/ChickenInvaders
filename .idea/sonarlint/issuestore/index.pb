@@ -76,8 +76,6 @@ A
 settings.gradle,0\5\05efc8b1657769a27696d478ded1e95f38737233
 k
 ;app/src/main/java/com/naorfarag/chickeninvaders/Finals.java,d\c\dc9d8218c2aeb6ae1ebbcf96aeb680ceb1d9e4d1
-t
-Dapp/src/main/java/com/naorfarag/chickeninvaders/PlayerNickScore.java,e\b\ebe0eed7b768061fe6235ebeb5f61394130fe8a7
 Y
 )app/src/main/res/drawable/buttonshape.xml,4\b\4b7bfbdee25aa310ab3c859179ecb0eccc7c1671
 d
@@ -88,3 +86,11 @@ s
 Capp/src/main/java/com/naorfarag/chickeninvaders/SettingsDialog.java,5\5\551554091f0740274a92e5d5b74c6be9922ba06e
 [
 +app/src/main/res/layout/settings_layout.xml,d\b\db32dcb936063b831fdcdf3afd33040dd83da3b2
+\
+,app/src/debug/res/values/google_maps_api.xml,c\7\c7ab7bac149c0f83f3f9611a0eb8fdce1aaf3aee
+u
+Eapp/src/main/java/com/naorfarag/chickeninvaders/PlayerAttributes.java,8\7\87c7f1d411375f0a5d7afc4037867e2dd24b65d7
+h
+8app/src/main/res/drawable/map_rounded_corner_overlay.xml,1\0\107710393a180031419a4e9efc28215f303629cb
+^
+.app/src/release/res/values/google_maps_api.xml,8\a\8ad28fcd8d693ab58d4fdb7d36965532163ebfa3

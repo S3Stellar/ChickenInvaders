@@ -4,9 +4,13 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.CheckBox;
 
 import androidx.annotation.NonNull;
@@ -17,6 +21,8 @@ import com.github.florent37.androidslidr.Slidr;
 
 import java.util.Objects;
 
+import hari.bounceview.BounceView;
+
 public class SettingsDialog extends AppCompatDialogFragment {
 
     private DialogListener listener;
@@ -24,6 +30,15 @@ public class SettingsDialog extends AppCompatDialogFragment {
     private CheckBox checkBox;
     private int progress;
     private Slidr slidr;
+
+    private Dialog dialog;
+    static int ui_flags =
+            View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
+                    View.SYSTEM_UI_FLAG_FULLSCREEN |
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
+                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
+                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
 
     @NonNull
     @Override
@@ -33,7 +48,6 @@ public class SettingsDialog extends AppCompatDialogFragment {
         View view = inflater.inflate(R.layout.settings_layout, null);
 
         builder.setView(view)
-                .setTitle(Finals.SETTINGS_TITLE)
                 .setPositiveButton(Finals.OK, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -46,8 +60,31 @@ public class SettingsDialog extends AppCompatDialogFragment {
         checkBox = view.findViewById(R.id.checkBox);
         slidr = view.findViewById(R.id.seekbarSlider);
         createSeekBar();
-        return builder.create();
+
+        dialog = builder.create();
+        if (dialog != null && dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+            BounceView.addAnimTo(dialog);
+
+            dialog.getWindow().
+                    setFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
+
+            // Set full-sreen mode (immersive sticky):
+            dialog.getWindow().getDecorView().setSystemUiVisibility(ui_flags);
+
+            // Show the alertDialog:
+            dialog.show();
+
+            // Set dialog focusable so we can avoid touching outside:
+            dialog.getWindow().
+                    clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
+
+        }
+        return dialog;
     }
+
 
     private void createSeekBar() {
         slidr.setTextFormatter(new Slidr.TextFormatter() {

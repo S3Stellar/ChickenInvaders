@@ -101,7 +101,7 @@
     </RelativeLayout>
 
     <Button
-        android:id="@+id/startButton"
+        android:id="@+id/backButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"

@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@drawable/dialog_rounded_bg">
 
     <CheckBox
         android:id="@+id/checkBox"
@@ -12,7 +13,7 @@
         android:layout_below="@id/seekbarSlider"
         android:layout_centerHorizontal="true"
         android:layout_margin="20dp"
-        android:text="Tilt mode" />
+        android:text="@string/tilt_mode" />
 
     <TextView
         android:id="@+id/textView2"
@@ -22,7 +23,8 @@
         android:layout_marginTop="35dp"
         android:layout_marginEnd="15dp"
         android:layout_marginBottom="15dp"
-        android:text="Amount of lanes:" />
+        android:text="@string/amount_of_lanes"
+        android:textColor="#707070" />
 
     <com.github.florent37.androidslidr.Slidr
         android:id="@+id/seekbarSlider"
