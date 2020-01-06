@@ -94,3 +94,7 @@ h
 8app/src/main/res/drawable/map_rounded_corner_overlay.xml,1\0\107710393a180031419a4e9efc28215f303629cb
 ^
 .app/src/release/res/values/google_maps_api.xml,8\a\8ad28fcd8d693ab58d4fdb7d36965532163ebfa3
+_
+/app/src/main/res/drawable/dialog_rounded_bg.xml,4\6\460223a49a4472f38a4aad386b869e29461a7d5e
+H
+app/google-services.json,f\d\fd8d34b142d02ec743a8efefefd2c097961666e9

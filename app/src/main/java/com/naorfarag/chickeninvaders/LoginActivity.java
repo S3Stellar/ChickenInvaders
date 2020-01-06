@@ -51,7 +51,6 @@ public class LoginActivity extends AppCompatActivity implements SettingsDialog.D
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         getLastLocation();
 
@@ -64,7 +63,6 @@ public class LoginActivity extends AppCompatActivity implements SettingsDialog.D
         BounceView.addAnimTo(findViewById(R.id.settingsIcon));
         BounceView.addAnimTo(findViewById(R.id.startButton));
         BounceView.addAnimTo(findViewById(R.id.hallOfFame));
-
     }
 
     public void onButton(View view) {

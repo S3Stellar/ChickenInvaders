@@ -1,3 +1,8 @@
 
-qsquid:MaximumInheritanceDepth"<This class has 6 parents which is greater than 5 authorized.(ÂÍÔÀýÿÿÿÿ8ó™ÊÕê-
-Fsquid:S1148a"#Use a logger to log this exception.(€ÉÔ…ýÿÿÿÿ8¡¼º“÷-
+Ÿsquid:S1186e"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(¹Þ‰8Ù€àÄ÷-
+Gsquid:S1148˜"#Use a logger to log this exception.(€ÉÔ…ýÿÿÿÿ8¡¼º“÷-
+nsquid:CommentedOutCodeLine""<This block of commented-out lines of code should be removed.(¾‹ºÌûÿÿÿÿ8Ù€àÄ÷-
+isquid:CommentedOutCodeLine="<This block of commented-out lines of code should be removed.(þŒñõ8Èï­Å÷-
+qsquid:MaximumInheritanceDepth"<This class has 6 parents which is greater than 5 authorized.(ÂÍÔÀýÿÿÿÿ8ó™ÊÕê-
+jsquid:CommentedOutCodeLine•"<This block of commented-out lines of code should be removed.(›öÑ÷8ò÷áÄ÷-
+isquid:CommentedOutCodeLine3"<This block of commented-out lines of code should be removed.(©Òè¼8Ù€àÄ÷-

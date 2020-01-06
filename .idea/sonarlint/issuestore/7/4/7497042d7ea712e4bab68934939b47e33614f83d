@@ -1,5 +1,13 @@
 
-vsquid:S3776š"RRefactor this method to reduce its Cognitive Complexity from 21 to the 15 allowed.(”’ßùıÿÿÿÿ8èÎŒ•÷-
-lsquid:HiddenFieldCheckÈ"=Rename "latitude" which hides the field declared at line 116.(–ÄÍ­úÿÿÿÿ8á¬š•÷-
-Gsquid:S3010"(Remove this assignment of "gameOnSound".(Ùˆº8¯Á·æğ-
-hsquid:HiddenFieldCheckÇ">Rename "longitude" which hides the field declared at line 115.(Ğ¯ü€8á¬š•÷-
+lsquid:HiddenFieldCheckÜ"=Rename "latitude" which hides the field declared at line 129.(–ÄÍ­úÿÿÿÿ8ì£Ä÷-
+hsquid:HiddenFieldCheckÛ">Rename "longitude" which hides the field declared at line 128.(Ğ¯ü€8ì£Ä÷-
+nsquid:CommentedOutCodeLineM"<This block of commented-out lines of code should be removed.(¾‹ºÌûÿÿÿÿ8ä•ÊÄ÷-
+osquid:CommentedOutCodeLine¦"<This block of commented-out lines of code should be removed.(ÆŸ‹øÿÿÿÿ8öşÆ÷-
+osquid:CommentedOutCodeLineÂ"<This block of commented-out lines of code should be removed.(’‰ÄŞøÿÿÿÿ8¸ÉÄ÷-
+Gsquid:S3010œ"(Remove this assignment of "gameOnSound".(Ùˆº8Í©óÃ÷-
+vsquid:S3776Ç"RRefactor this method to reduce its Cognitive Complexity from 21 to the 15 allowed.(”’ßùıÿÿÿÿ8Í©óÃ÷-
+osquid:CommentedOutCodeLineô"<This block of commented-out lines of code should be removed.(ùÛ‡Îøÿÿÿÿ8Ó÷ÊÄ÷-
+osquid:CommentedOutCodeLineµ"<This block of commented-out lines of code should be removed.(³¶£÷úÿÿÿÿ8Í·‚Æ÷-
+bsquid:S1155™">Use isEmpty() to check whether the collection is empty or not.(áÎƒúÿÿÿÿ8£ŒÃÅ÷-
+ squid:S1186î"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(¹Ş‰8Í©óÃ÷-
+osquid:CommentedOutCodeLineÀ"<This block of commented-out lines of code should be removed.(Ûæ®˜üÿÿÿÿ8£»ÊÄ÷-

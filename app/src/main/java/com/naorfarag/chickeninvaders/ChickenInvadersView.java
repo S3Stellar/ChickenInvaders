@@ -3,7 +3,6 @@ package com.naorfarag.chickeninvaders;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -26,6 +25,11 @@ import android.view.WindowManager;
 
 import com.github.nisrulz.sensey.Sensey;
 import com.github.nisrulz.sensey.TiltDirectionDetector;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -63,8 +67,8 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
     // The high Scores Holder
     private ArrayList<PlayerAttributes> gameScores = new ArrayList<>();
 
-    // Shared Preferences to store the High Scores
-    private SharedPreferences sharedPreferences;
+    // Firebase database
+    private DatabaseReference dbref;
 
     // Game over
     volatile boolean gameOver = false;
@@ -131,10 +135,10 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
         deviceTiltManager();
 
         // Resize bitmaps
-        resizeBitmaps(context);
+        resizeBitmaps();
 
         // Init game objects
-        initializeGame(context);
+        initializeGame();
 
         // Start playerScore counter (1sec)
         activateScore();
@@ -174,9 +178,11 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
             gameOnSound.setVolume(0.65f, 0.65f);
     }
 
-    private void initializeGame(Context context) {
+    private void initializeGame() {
         // Initializing
-        sharedPreferences = context.getSharedPreferences(Finals.SHARED_PREF, Context.MODE_PRIVATE);
+        dbref = FirebaseDatabase.getInstance().getReference();
+        updateDataBase();
+
         player = new PlayerShip(context, screenX, screenY);
         surfaceHolder = getHolder();
         boom = new Boom(context);
@@ -193,23 +199,37 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
         for (int i = 0; i < enemyCount; i++) {
             enemies[i] = new Invader(context, screenX, screenY, screenX - (i + 1) * screenX / enemyCount + screenX / (enemyCount * 2) - getResources().getDrawable(R.drawable.chicken1).getIntrinsicWidth() / 2);
         }
-
-        // Initialize existing highScore
-        for (int i = 0; i < Finals.HIGH_SCORE_COUNT; i++) {
-            double longitude;
-            double latitude;
-            try {
-                longitude = Double.parseDouble(sharedPreferences.getString(Finals.LONGITUDE + i, ""));
-                latitude = Double.parseDouble(sharedPreferences.getString(Finals.LATITUDE + i, ""));
-            } catch (Exception e) {
-                longitude = 0;
-                latitude = 0;
-            }
-            gameScores.add(new PlayerAttributes(sharedPreferences.getInt(Finals.SCORE + i, 0),
-                    sharedPreferences.getString(Finals.NICKNAME + i, ""), longitude, latitude));
-        }
     }
 
+    public void updateDataBase() {
+        ValueEventListener valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                double longitude;
+                double latitude;
+                int score;
+                String nickname = "";
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    try {
+                        nickname = ds.child(Finals.NICKNAME).getValue(String.class);
+                        score = ds.child(Finals.SCORE).getValue(Integer.class);
+                        longitude = ds.child(Finals.LONGITUDE).getValue(Double.class);
+                        latitude = ds.child(Finals.LATITUDE).getValue(Double.class);
+                    } catch (Exception e) {
+                        longitude = 0;
+                        latitude = 0;
+                        score = 0;
+                    }
+                    gameScores.add(new PlayerAttributes(score, nickname, longitude, latitude));
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        };
+        dbref.addListenerForSingleValueEvent(valueEventListener);
+    }
 
     @Override
     public void run() {
@@ -398,7 +418,7 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
         }
     }
 
-    private void resizeBitmaps(Context context) {
+    private void resizeBitmaps() {
         heart = BitmapFactory.decodeResource(context.getResources(), R.drawable.heart);
         heart = Bitmap.createScaledBitmap(heart, screenX / 20, screenX / 20, true);
 
@@ -468,8 +488,8 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
                     break;
             }
         }
-        if(isTilt && paused)
-            paused=false;
+        if (isTilt && paused)
+            paused = false;
         if (gameOver && motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
             stopMusic();
             pause();
@@ -489,28 +509,25 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
     }
 
     private void updateHighScoreTable() {
-        for (int i = Finals.HIGH_SCORE_COUNT - 1; i > 0; i--) {
-            if (gameScores.get(i).getScore() < playerScore) {
-                gameScores.get(i).setScore(playerScore);
-                gameScores.get(i).setNickname(playerNickname);
-                gameScores.get(i).setLatitude(latitude);
-                gameScores.get(i).setLongitude(longitude);
-                break;
+        if (gameScores.size() > 0)
+            for (int i = Finals.HIGH_SCORE_COUNT - 1; i > 0; i--) {
+                if (gameScores.get(i).getScore() < playerScore) {
+                    gameScores.get(i).setScore(playerScore);
+                    gameScores.get(i).setNickname(playerNickname);
+                    gameScores.get(i).setLatitude(latitude);
+                    gameScores.get(i).setLongitude(longitude);
+                    break;
+                }
             }
-        }
         // Sort scores
         Collections.sort(gameScores);
 
-        // Storing the scores through shared Preferences
-        SharedPreferences.Editor e = sharedPreferences.edit();
-
         for (int i = 0; i < Finals.HIGH_SCORE_COUNT; i++) {
-            e.putInt(Finals.SCORE + i, gameScores.get(i).getScore());
-            e.putString(Finals.NICKNAME + i, gameScores.get(i).getNickname());
-            e.putString(Finals.LONGITUDE + i, gameScores.get(i).getLongitude() + "");
-            e.putString(Finals.LATITUDE + i, gameScores.get(i).getLatitude() + "");
+            dbref.child("user" + i).child(Finals.NICKNAME).setValue(gameScores.get(i).getNickname());
+            dbref.child("user" + i).child(Finals.SCORE).setValue(gameScores.get(i).getScore());
+            dbref.child("user" + i).child(Finals.LONGITUDE).setValue(gameScores.get(i).getLongitude());
+            dbref.child("user" + i).child(Finals.LATITUDE).setValue(gameScores.get(i).getLatitude());
         }
-        e.apply();
     }
 
     // Increase playerScore every 1 second

@@ -1,10 +1,10 @@
 package com.naorfarag.chickeninvaders;
 
 public class PlayerAttributes implements Comparable<PlayerAttributes> {
-    public int score;
-    public String nickname;
-    public double latitude;
-    public double longitude;
+    private int score;
+    private String nickname;
+    private double latitude;
+    private double longitude;
 
     public PlayerAttributes(int intValue, String stringValue, double longitude, double latitude) {
         this.latitude = latitude;

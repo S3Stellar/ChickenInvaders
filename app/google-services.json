@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "579482641186",
+    "firebase_url": "https://chicken-invaders-2681f.firebaseio.com",
+    "project_id": "chicken-invaders-2681f",
+    "storage_bucket": "chicken-invaders-2681f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:579482641186:android:94ac1bc5b5b132cc29fb7b",
+        "android_client_info": {
+          "package_name": "com.naorfarag.chickeninvaders"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "579482641186-p26kdb3796gcq683p4vlm5jq1eae6rsd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBV2RbMz5yHjQZRngT-tyw-i3rAaDZmlnY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "579482641186-p26kdb3796gcq683p4vlm5jq1eae6rsd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
