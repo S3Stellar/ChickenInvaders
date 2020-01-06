@@ -14,14 +14,17 @@ import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.util.Log;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.github.nisrulz.sensey.Sensey;
 import com.github.nisrulz.sensey.TiltDirectionDetector;
@@ -394,8 +397,24 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
             // If lives less than 3 -> add 1 life, else +10 points
             if (lives < Finals.MAX_LIFE) {
                 lives++;
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast toast = Toast.makeText(context, "+1 Life", Toast.LENGTH_SHORT);
+                        toast.setGravity(Gravity.TOP | Gravity.CENTER,0,50);
+                        toast.show();
+                    }
+                });
             } else {
                 playerScore += Finals.EGG_BONUS;
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast toast = Toast.makeText(context, "+"+Finals.EGG_BONUS+" Bonus points", Toast.LENGTH_SHORT);
+                        toast.setGravity(Gravity.TOP | Gravity.CENTER,0,50);
+                        toast.show();
+                    }
+                });
             }
             egg.setY(Finals.OUT_OF_BOUNDS);
             egg.setX(Finals.OUT_OF_BOUNDS);
