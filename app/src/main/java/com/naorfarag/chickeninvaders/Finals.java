@@ -36,6 +36,7 @@ public final class Finals {
     public static final String SCORE = "score";
     public static final String IS_TILT = "isTilt";
     public static final String NICKNAME = "nickname";
+    public static final String USER = "user";
 
     public static final String PLAY_AGAIN = "Click to play again!";
     public static final String ARIAL_FONT = "Arial";

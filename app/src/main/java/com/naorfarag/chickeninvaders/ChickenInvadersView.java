@@ -401,7 +401,7 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
                     @Override
                     public void run() {
                         Toast toast = Toast.makeText(context, "+1 Life", Toast.LENGTH_SHORT);
-                        toast.setGravity(Gravity.TOP | Gravity.CENTER,0,50);
+                        toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 50);
                         toast.show();
                     }
                 });
@@ -410,8 +410,8 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
                 new Handler(Looper.getMainLooper()).post(new Runnable() {
                     @Override
                     public void run() {
-                        Toast toast = Toast.makeText(context, "+"+Finals.EGG_BONUS+" Bonus points", Toast.LENGTH_SHORT);
-                        toast.setGravity(Gravity.TOP | Gravity.CENTER,0,50);
+                        Toast toast = Toast.makeText(context, "+" + Finals.EGG_BONUS + " Bonus points", Toast.LENGTH_SHORT);
+                        toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 50);
                         toast.show();
                     }
                 });
@@ -528,24 +528,23 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
     }
 
     private void updateHighScoreTable() {
-        if (gameScores.size() > 0)
-            for (int i = Finals.HIGH_SCORE_COUNT - 1; i > 0; i--) {
-                if (gameScores.get(i).getScore() < playerScore) {
-                    gameScores.get(i).setScore(playerScore);
-                    gameScores.get(i).setNickname(playerNickname);
-                    gameScores.get(i).setLatitude(latitude);
-                    gameScores.get(i).setLongitude(longitude);
-                    break;
-                }
+        for (int i = Finals.HIGH_SCORE_COUNT - 1; i > 0; i--) {
+            if (gameScores.get(i).getScore() < playerScore) {
+                gameScores.get(i).setScore(playerScore);
+                gameScores.get(i).setNickname(playerNickname);
+                gameScores.get(i).setLatitude(latitude);
+                gameScores.get(i).setLongitude(longitude);
+                break;
             }
+        }
         // Sort scores
         Collections.sort(gameScores);
 
         for (int i = 0; i < Finals.HIGH_SCORE_COUNT; i++) {
-            dbref.child("user" + i).child(Finals.NICKNAME).setValue(gameScores.get(i).getNickname());
-            dbref.child("user" + i).child(Finals.SCORE).setValue(gameScores.get(i).getScore());
-            dbref.child("user" + i).child(Finals.LONGITUDE).setValue(gameScores.get(i).getLongitude());
-            dbref.child("user" + i).child(Finals.LATITUDE).setValue(gameScores.get(i).getLatitude());
+            dbref.child(Finals.USER + i).child(Finals.NICKNAME).setValue(gameScores.get(i).getNickname());
+            dbref.child(Finals.USER + i).child(Finals.SCORE).setValue(gameScores.get(i).getScore());
+            dbref.child(Finals.USER + i).child(Finals.LONGITUDE).setValue(gameScores.get(i).getLongitude());
+            dbref.child(Finals.USER + i).child(Finals.LATITUDE).setValue(gameScores.get(i).getLatitude());
         }
     }
 

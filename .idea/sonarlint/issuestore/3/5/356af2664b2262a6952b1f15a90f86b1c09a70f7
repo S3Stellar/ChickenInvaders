@@ -1,4 +1,4 @@
 
-qsquid:MaximumInheritanceDepth'"<This class has 6 parents which is greater than 5 authorized.(éû·ùýÿÿÿÿ8œØù¹÷-
-Nsquid:S1066Ò"/Merge this if statement with the enclosing one.(©§¹8œØù¹÷-
 `squid:S1126Š"AReplace this if-then-else statement by a single return statement.(‚‡ÿÓ8œØù¹÷-
+Nsquid:S1066Ò"/Merge this if statement with the enclosing one.(©§¹8œØù¹÷-
+qsquid:MaximumInheritanceDepth'"<This class has 6 parents which is greater than 5 authorized.(éû·ùýÿÿÿÿ8œØù¹÷-
