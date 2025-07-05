@@ -20,6 +20,37 @@ public final class Finals {
 
     public static final int PERMISSION_ID = 44;
 
+    // New shooting mechanics constants
+    public static final int BULLET_SPEED = 2000;
+    public static final int MAX_BULLETS = 10;
+    public static final int BULLET_DAMAGE = 1;
+    public static final int ENEMY_HEALTH = 1;
+    public static final int BOSS_HEALTH = 10;
+    
+    // Power-up constants
+    public static final int RAPID_FIRE_DURATION = 5000; // 5 seconds
+    public static final int SHIELD_DURATION = 3000; // 3 seconds
+    public static final int DOUBLE_SCORE_DURATION = 10000; // 10 seconds
+    public static final int SPREAD_SHOT_DURATION = 8000; // 8 seconds
+    
+    // Performance constants
+    public static final int MAX_PARTICLES = 50;
+    public static final int PARTICLE_LIFE = 1000; // 1 second
+    
+    // Difficulty progression
+    public static final int BOSS_SPAWN_SCORE = 100;
+    public static final int DIFFICULTY_INCREASE_INTERVAL = 50;
+    
+    // Combo system
+    public static final int COMBO_MULTIPLIER_MAX = 5;
+    public static final int COMBO_TIMEOUT = 3000; // 3 seconds
+    
+    // Achievement constants
+    public static final int ACHIEVEMENT_FIRST_KILL = 1;
+    public static final int ACHIEVEMENT_COMBO_5 = 5;
+    public static final int ACHIEVEMENT_SCORE_100 = 100;
+    public static final int ACHIEVEMENT_BOSS_DEFEAT = 1;
+
     public static final int UI_FLAGS =
             View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
                     View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
@@ -43,13 +74,13 @@ public final class Finals {
 
     public static final String INST_MSG1 = "Click left side of the screen to move left\n";
     public static final String INST_MSG2 = "Click right side of the screen to move right";
+    public static final String INST_MSG3 = "Tap anywhere to shoot!";
     public static final String EXIT_CHECK_MSG = "Are you sure you want to exit?";
     public static final String YES = "Yes";
     public static final String NO = "No";
     public static final String INSANE = "Insane";
     public static final String EASY = "Easy";
     public static final String OK = "Ok";
-
 
     public enum HOF_RANKS {
         FIRST("First : "), SECOND("Second : "), THIRD("Third : "), FOURTH("Fourth : ");
@@ -62,5 +93,13 @@ public final class Finals {
         HOF_RANKS(String rank) {
             this.rank = rank;
         }
+    }
+    
+    public enum PowerUpType {
+        RAPID_FIRE, SHIELD, DOUBLE_SCORE, SPREAD_SHOT, EXTRA_LIFE
+    }
+    
+    public enum WeaponType {
+        NORMAL, RAPID, SPREAD, LASER
     }
 }

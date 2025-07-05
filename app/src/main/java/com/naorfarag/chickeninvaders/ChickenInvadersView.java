@@ -60,6 +60,35 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
 
     // Amount of enemies on screen at same time
     private int enemyCount;
+    
+    // New game objects for enhanced features
+    private Bullet[] bullets;
+    private PowerUp powerUp;
+    private Particle[] particles;
+    private BossEnemy boss;
+    
+    // Shooting mechanics
+    private boolean autoShoot = false;
+    
+    // Power-up system
+    private boolean rapidFireActive = false;
+    private boolean doubleScoreActive = false;
+    private boolean spreadShotActive = false;
+    private long rapidFireEndTime = 0;
+    private long doubleScoreEndTime = 0;
+    private long spreadShotEndTime = 0;
+    
+    // Combo system
+    private int comboCount = 0;
+    private long lastKillTime = 0;
+    private int comboMultiplier = 1;
+    
+    // Achievement tracking
+    private int enemiesKilled = 0;
+    private boolean firstKillAchieved = false;
+    private boolean combo5Achieved = false;
+    private boolean score100Achieved = false;
+    private boolean bossDefeatedAchieved = false;
 
     // The playerScore
     private int playerScore;
@@ -193,6 +222,21 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
         egg = new Egg(context, screenX, screenY);
         enemies = new Invader[enemyCount];
 
+        // Initialize new game objects
+        bullets = new Bullet[Finals.MAX_BULLETS];
+        for (int i = 0; i < Finals.MAX_BULLETS; i++) {
+            bullets[i] = new Bullet(context);
+        }
+        
+        powerUp = new PowerUp(context, screenX, screenY);
+        
+        particles = new Particle[Finals.MAX_PARTICLES];
+        for (int i = 0; i < Finals.MAX_PARTICLES; i++) {
+            particles[i] = new Particle();
+        }
+        
+        boss = new BossEnemy(context, screenX, screenY);
+
         // Initialize stars for background effect
         // Number of stars
         for (int i = 0; i < Finals.STARS_COUNT; i++)
@@ -262,6 +306,32 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
         // Move the player's ship
         player.update(fps);
 
+        // Update bullets
+        for (Bullet bullet : bullets) {
+            bullet.update(fps);
+        }
+        
+        // Update particles
+        for (Particle particle : particles) {
+            particle.update(fps);
+        }
+        
+        // Update power-up
+        powerUp.update(rand.nextInt(4) + 1 + playerScore / 7);
+        
+        // Update boss if active
+        if (boss.shouldSpawn(playerScore)) {
+            boss.spawn();
+        }
+        boss.update(fps);
+        
+        // Boss attacks
+        if (boss.isActive() && boss.canAttack()) {
+            boss.attack();
+            // Create enemy bullets (using existing egg as projectile for now)
+            // This could be expanded with dedicated enemy bullets
+        }
+
         // Increase stars & Invader & Egg speed as game progress
         for (Star s : stars)
             s.update(rand.nextInt(5) + 1 + playerScore / 7);
@@ -277,8 +347,23 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
         boom.setX(Finals.OUT_OF_BOUNDS);
         boom.setY(Finals.OUT_OF_BOUNDS);
 
+        // Auto-shoot if enabled
+        if (autoShoot && player.canShoot()) {
+            shootBullet();
+        }
+        
+        // Update power-ups
+        updatePowerUps();
+        
+        // Update combo system
+        updateComboSystem();
+
+        // Check all collisions
         checkEggIntersect();
+        checkPowerUpIntersect();
         checkInvaderIntersect();
+        checkBulletCollisions();
+        checkBossCollisions();
 
         if (lives <= 0) {
             gameOver = true;
@@ -286,6 +371,9 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
                 gameOverSound.start();
             }
         }
+        
+        // Check achievements
+        checkAchievements();
     }
 
     private void draw() {
@@ -299,27 +387,70 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
                 paint.setStrokeWidth(s.getStarWidth());
                 canvas.drawPoint(s.getX(), s.getY(), paint);
             }
-            // Draw player
+            
+            // Draw particles first (behind everything)
+            for (Particle particle : particles) {
+                particle.draw(canvas, paint);
+            }
+            
+            // Draw player with shield effect
+            if (player.hasShield()) {
+                // Draw shield as a blue circle around player
+                paint.setColor(Color.argb(100, 0, 150, 255));
+                canvas.drawCircle(player.getX() + player.getBitmap().getWidth() / 2f, 
+                                player.getY() + player.getBitmap().getHeight() / 2f, 
+                                player.getBitmap().getWidth() / 2f + 10, paint);
+                paint.setColor(Color.WHITE);
+            }
             canvas.drawBitmap(player.getBitmap(), player.getX(), player.getY(), paint);
+
+            // Draw bullets
+            paint.setColor(Color.YELLOW);
+            for (Bullet bullet : bullets) {
+                if (bullet.isActive()) {
+                    canvas.drawBitmap(bullet.getBitmap(), bullet.getX(), bullet.getY(), paint);
+                }
+            }
+            paint.setColor(Color.WHITE);
 
             // Draw hearts
             for (int i = 0; i < lives; i++)
                 canvas.drawBitmap(heart, screenX - (heart.getWidth() + 10) * (i + 1), 15, paint);
 
-            // Draw playerScore
-            paint.setColor(Color.argb(255, 249, 129, 0));
-            paint.setTextSize(40);
-            canvas.drawText("Score: " + playerScore, 10, 50, paint);
+            // Draw enhanced UI
+            drawEnhancedUI(canvas);
 
             // Draw enemies
-            for (int i = 0; i < enemyCount; i++)
-                canvas.drawBitmap(enemies[i].getBitmap(), enemies[i].getX(), enemies[i].getY(), paint);
+            for (int i = 0; i < enemyCount; i++) {
+                if (!enemies[i].isDestroyed()) {
+                    canvas.drawBitmap(enemies[i].getBitmap(), enemies[i].getX(), enemies[i].getY(), paint);
+                }
+            }
+            
+            // Draw boss
+            if (boss.isActive()) {
+                canvas.drawBitmap(boss.getBitmap(), boss.getX(), boss.getY(), paint);
+                
+                // Draw boss health bar
+                drawBossHealthBar(canvas);
+            }
 
             // Drawing boom image
             canvas.drawBitmap(boom.getBitmap(), boom.getX(), boom.getY(), paint);
 
             // Draw egg (gives 1 life if below 3, else 10Points)
             canvas.drawBitmap(egg.getBitmap(), egg.getX(), egg.getY(), paint);
+            
+            // Draw power-up
+            if (powerUp.isActive()) {
+                // Draw power-up with glow effect
+                paint.setColor(Color.argb(150, 255, 255, 0));
+                canvas.drawCircle(powerUp.getX() + powerUp.getBitmap().getWidth() / 2f, 
+                                powerUp.getY() + powerUp.getBitmap().getHeight() / 2f, 
+                                powerUp.getBitmap().getWidth() / 2f + 5, paint);
+                paint.setColor(Color.WHITE);
+                canvas.drawBitmap(powerUp.getBitmap(), powerUp.getX(), powerUp.getY(), paint);
+            }
 
             // Game over - draw bitmap (need to fix gif)
             if (gameOver) {
@@ -338,6 +469,95 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
             }
             surfaceHolder.unlockCanvasAndPost(canvas);
         }
+    }
+    
+    private void drawEnhancedUI(Canvas canvas) {
+        // Reset paint properties
+        paint.setTextAlign(Paint.Align.LEFT);
+        paint.setTypeface(Typeface.DEFAULT);
+        
+        // Draw score with combo multiplier
+        paint.setColor(Color.argb(255, 249, 129, 0));
+        paint.setTextSize(40);
+        String scoreText = "Score: " + playerScore;
+        if (comboMultiplier > 1) {
+            scoreText += " (x" + comboMultiplier + ")";
+        }
+        canvas.drawText(scoreText, 10, 50, paint);
+        
+        // Draw combo counter
+        if (comboCount > 0) {
+            paint.setColor(Color.argb(255, 255, 50, 50));
+            paint.setTextSize(30);
+            canvas.drawText("Combo: " + comboCount, 10, 90, paint);
+        }
+        
+        // Draw enemies killed
+        paint.setColor(Color.argb(255, 100, 255, 100));
+        paint.setTextSize(25);
+        canvas.drawText("Kills: " + enemiesKilled, 10, 130, paint);
+        
+        // Draw active power-ups
+        int powerUpY = 170;
+        paint.setTextSize(20);
+        
+        if (rapidFireActive) {
+            paint.setColor(Color.RED);
+            canvas.drawText("RAPID FIRE", 10, powerUpY);
+            powerUpY += 25;
+        }
+        
+        if (doubleScoreActive) {
+            paint.setColor(Color.GOLD);
+            canvas.drawText("DOUBLE SCORE", 10, powerUpY);
+            powerUpY += 25;
+        }
+        
+        if (spreadShotActive) {
+            paint.setColor(Color.CYAN);
+            canvas.drawText("SPREAD SHOT", 10, powerUpY);
+            powerUpY += 25;
+        }
+        
+        if (player.hasShield()) {
+            paint.setColor(Color.BLUE);
+            canvas.drawText("SHIELD", 10, powerUpY);
+        }
+        
+        // Draw FPS counter (for performance monitoring)
+        paint.setColor(Color.WHITE);
+        paint.setTextSize(15);
+        canvas.drawText("FPS: " + fps, screenX - 100, 30, paint);
+    }
+    
+    private void drawBossHealthBar(Canvas canvas) {
+        if (!boss.isActive()) return;
+        
+        int barWidth = screenX - 40;
+        int barHeight = 20;
+        int barX = 20;
+        int barY = 100;
+        
+        // Background bar
+        paint.setColor(Color.RED);
+        canvas.drawRect(barX, barY, barX + barWidth, barY + barHeight, paint);
+        
+        // Health bar
+        paint.setColor(Color.GREEN);
+        float healthPercent = boss.getHealthPercentage();
+        canvas.drawRect(barX, barY, barX + (barWidth * healthPercent), barY + barHeight, paint);
+        
+        // Border
+        paint.setColor(Color.WHITE);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(2);
+        canvas.drawRect(barX, barY, barX + barWidth, barY + barHeight, paint);
+        paint.setStyle(Paint.Style.FILL);
+        
+        // Boss label
+        paint.setTextSize(25);
+        paint.setColor(Color.YELLOW);
+        canvas.drawText("BOSS", barX, barY - 5, paint);
     }
 
     public void pause() {
@@ -374,8 +594,9 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
 
     private void checkInvaderIntersect() {
         for (int i = 0; i < enemyCount; i++) {
-            // If collision occurs with player
-            if (Rect.intersects(player.getDetectCollision(), enemies[i].getDetectCollision())) {
+            // If collision occurs with player and no shield active
+            if (!player.hasShield() && !enemies[i].isDestroyed() && 
+                Rect.intersects(player.getDetectCollision(), enemies[i].getDetectCollision())) {
 
                 if (killedEnemySound != null && killedEnemySound.isPlaying())
                     killedEnemySound.pause();
@@ -384,10 +605,17 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
 
                 vibrate();
                 lives--;
+                
+                // Create explosion particles
+                Particle.createExplosion(particles, enemies[i].getX() + enemies[i].getBitmap().getWidth() / 2f, 
+                                        enemies[i].getY() + enemies[i].getBitmap().getHeight() / 2f, 
+                                        android.graphics.Color.RED, 10);
+                
                 // Displaying boom at that location
                 boom.setX(enemies[i].getX());
                 boom.setY(enemies[i].getY());
-                enemies[i].setY(screenY + enemies[i].getBitmap().getHeight());
+                enemies[i].destroy();
+                enemies[i].respawn();
             }
         }
     }
@@ -481,7 +709,7 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
         }
     }
 
-    // Screen divided in half vertically to control movement
+    // Enhanced touch controls for movement and shooting
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
@@ -494,12 +722,29 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
                 // Player has removed finger from screen
                 case MotionEvent.ACTION_UP:
                     player.setMovementState(PlayerShip.STOPPED);
+                    autoShoot = false;
                     break;
 
                 // Player has touched the screen
                 case MotionEvent.ACTION_DOWN:
                 case MotionEvent.ACTION_POINTER_DOWN:
                     paused = false;
+                    
+                    // Movement based on horizontal position
+                    if (motionEvent.getX(pointerIndex) > (float) screenX / 2)
+                        player.setMovementState(PlayerShip.RIGHT);
+                    else
+                        player.setMovementState(PlayerShip.LEFT);
+                    
+                    // Enable auto-shooting
+                    autoShoot = true;
+                    
+                    // Immediate shot
+                    shootBullet();
+                    break;
+                    
+                case MotionEvent.ACTION_MOVE:
+                    // Continue movement and shooting during drag
                     if (motionEvent.getX(pointerIndex) > (float) screenX / 2)
                         player.setMovementState(PlayerShip.RIGHT);
                     else
@@ -507,8 +752,10 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
                     break;
             }
         }
-        if (isTilt && paused)
+        if (isTilt && paused) {
             paused = false;
+            autoShoot = true; // Enable auto-shoot in tilt mode too
+        }
         if (gameOver && motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
             stopMusic();
             pause();
@@ -608,5 +855,251 @@ public class ChickenInvadersView extends SurfaceView implements Runnable {
             screenY = outPoint.x;
             screenX = outPoint.y;
         }
+    }
+    
+    // New shooting mechanics
+    private void shootBullet() {
+        if (!player.canShoot()) return;
+        
+        player.shoot();
+        
+        if (player.getWeaponType() == Finals.WeaponType.SPREAD || spreadShotActive) {
+            // Spread shot - fire 3 bullets
+            float[][] positions = player.getSpreadShotPositions();
+            int bulletsCreated = 0;
+            for (int i = 0; i < bullets.length && bulletsCreated < 3; i++) {
+                if (!bullets[i].isActive()) {
+                    bullets[i].fire(positions[bulletsCreated][0], positions[bulletsCreated][1]);
+                    bulletsCreated++;
+                }
+            }
+        } else {
+            // Normal shot
+            float[] pos = player.getBulletStartPosition();
+            for (Bullet bullet : bullets) {
+                if (!bullet.isActive()) {
+                    bullet.fire(pos[0], pos[1]);
+                    break;
+                }
+            }
+        }
+        
+        // Play shooting sound
+        if (hitAnEggSound != null && !hitAnEggSound.isPlaying()) {
+            hitAnEggSound.start();
+        }
+    }
+    
+    // Power-up system
+    private void updatePowerUps() {
+        long currentTime = System.currentTimeMillis();
+        
+        // Check rapid fire
+        if (rapidFireActive && currentTime > rapidFireEndTime) {
+            rapidFireActive = false;
+            player.resetWeapon();
+        }
+        
+        // Check double score
+        if (doubleScoreActive && currentTime > doubleScoreEndTime) {
+            doubleScoreActive = false;
+        }
+        
+        // Check spread shot
+        if (spreadShotActive && currentTime > spreadShotEndTime) {
+            spreadShotActive = false;
+        }
+    }
+    
+    private void checkPowerUpIntersect() {
+        if (powerUp.isActive() && Rect.intersects(player.getDetectCollision(), powerUp.getDetectCollision())) {
+            collectPowerUp(powerUp.getType());
+            powerUp.collect();
+            
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    Toast toast = Toast.makeText(context, powerUp.getDescription(), Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 100);
+                    toast.show();
+                }
+            });
+            
+            vibrate();
+        }
+    }
+    
+    private void collectPowerUp(Finals.PowerUpType type) {
+        long currentTime = System.currentTimeMillis();
+        
+        switch (type) {
+            case RAPID_FIRE:
+                rapidFireActive = true;
+                rapidFireEndTime = currentTime + Finals.RAPID_FIRE_DURATION;
+                player.activateRapidFire();
+                break;
+            case SHIELD:
+                player.activateShield(Finals.SHIELD_DURATION);
+                break;
+            case DOUBLE_SCORE:
+                doubleScoreActive = true;
+                doubleScoreEndTime = currentTime + Finals.DOUBLE_SCORE_DURATION;
+                break;
+            case SPREAD_SHOT:
+                spreadShotActive = true;
+                spreadShotEndTime = currentTime + Finals.SPREAD_SHOT_DURATION;
+                player.activateSpreadShot();
+                break;
+            case EXTRA_LIFE:
+                if (lives < Finals.MAX_LIFE) {
+                    lives++;
+                }
+                break;
+        }
+    }
+    
+    // Collision detection for bullets
+    private void checkBulletCollisions() {
+        for (Bullet bullet : bullets) {
+            if (!bullet.isActive()) continue;
+            
+            // Check bullet vs enemies
+            for (Invader enemy : enemies) {
+                if (!enemy.isDestroyed() && Rect.intersects(bullet.getDetectCollision(), enemy.getDetectCollision())) {
+                    // Hit enemy
+                    enemy.takeDamage(bullet.getDamage());
+                    bullet.setActive(false);
+                    
+                    if (enemy.isDestroyed()) {
+                        // Enemy destroyed
+                        addScore(enemy.getScoreValue());
+                        enemiesKilled++;
+                        updateCombo();
+                        
+                        // Create explosion particles
+                        Particle.createExplosion(particles, enemy.getX() + enemy.getBitmap().getWidth() / 2f, 
+                                                enemy.getY() + enemy.getBitmap().getHeight() / 2f, 
+                                                android.graphics.Color.ORANGE, 8);
+                        
+                        // Play sound
+                        if (killedEnemySound != null && !killedEnemySound.isPlaying()) {
+                            killedEnemySound.start();
+                        }
+                        
+                        enemy.respawn();
+                    }
+                    break;
+                }
+            }
+        }
+    }
+    
+    // Boss collision detection
+    private void checkBossCollisions() {
+        if (!boss.isActive()) return;
+        
+        // Check bullets vs boss
+        for (Bullet bullet : bullets) {
+            if (bullet.isActive() && Rect.intersects(bullet.getDetectCollision(), boss.getDetectCollision())) {
+                boss.takeDamage(bullet.getDamage());
+                bullet.setActive(false);
+                
+                // Create hit particles
+                Particle.createExplosion(particles, bullet.getX(), bullet.getY(), 
+                                        android.graphics.Color.RED, 5);
+                
+                if (!boss.isActive()) {
+                    // Boss defeated
+                    addScore(50); // Big score bonus
+                    bossDefeatedAchieved = true;
+                    
+                    // Big explosion
+                    Particle.createExplosion(particles, boss.getX() + boss.getBitmap().getWidth() / 2f, 
+                                            boss.getY() + boss.getBitmap().getHeight() / 2f, 
+                                            android.graphics.Color.YELLOW, 15);
+                    
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast toast = Toast.makeText(context, "BOSS DEFEATED! +50 Points!", Toast.LENGTH_LONG);
+                            toast.setGravity(Gravity.CENTER, 0, 0);
+                            toast.show();
+                        }
+                    });
+                }
+                break;
+            }
+        }
+        
+        // Check boss vs player (if no shield)
+        if (!player.hasShield() && Rect.intersects(player.getDetectCollision(), boss.getDetectCollision())) {
+            lives--;
+            vibrate();
+            
+            // Create explosion at player position
+            Particle.createExplosion(particles, player.getX() + player.getBitmap().getWidth() / 2f, 
+                                    player.getY() + player.getBitmap().getHeight() / 2f, 
+                                    android.graphics.Color.RED, 10);
+            
+            // Temporarily move boss away to prevent multiple hits
+            boss.setActive(false);
+        }
+    }
+    
+    // Combo system
+    private void updateCombo() {
+        long currentTime = System.currentTimeMillis();
+        lastKillTime = currentTime;
+        comboCount++;
+        
+        // Update multiplier
+        comboMultiplier = Math.min(1 + comboCount / 5, Finals.COMBO_MULTIPLIER_MAX);
+    }
+    
+    private void updateComboSystem() {
+        long currentTime = System.currentTimeMillis();
+        
+        // Reset combo if timeout
+        if (currentTime - lastKillTime > Finals.COMBO_TIMEOUT) {
+            comboCount = 0;
+            comboMultiplier = 1;
+        }
+    }
+    
+    private void addScore(int baseScore) {
+        int actualScore = baseScore * comboMultiplier;
+        if (doubleScoreActive) {
+            actualScore *= 2;
+        }
+        playerScore += actualScore;
+    }
+    
+    // Achievement system
+    private void checkAchievements() {
+        if (!firstKillAchieved && enemiesKilled >= Finals.ACHIEVEMENT_FIRST_KILL) {
+            firstKillAchieved = true;
+            showAchievement("First Kill!");
+        }
+        
+        if (!combo5Achieved && comboCount >= Finals.ACHIEVEMENT_COMBO_5) {
+            combo5Achieved = true;
+            showAchievement("Combo Master!");
+        }
+        
+        if (!score100Achieved && playerScore >= Finals.ACHIEVEMENT_SCORE_100) {
+            score100Achieved = true;
+            showAchievement("Century Score!");
+        }
+    }
+    
+    private void showAchievement(final String achievement) {
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                Toast toast = Toast.makeText(context, "ACHIEVEMENT: " + achievement, Toast.LENGTH_LONG);
+                toast.setGravity(Gravity.CENTER, 0, -200);
+                toast.show();
+            }
+        });
     }
 }

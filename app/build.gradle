@@ -13,9 +13,32 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            
+            // Performance optimizations
+            debuggable false
+            jniDebuggable false
+            renderscriptDebuggable false
         }
+        debug {
+            // Enable debugging but keep performance optimizations
+            minifyEnabled false
+            debuggable true
+        }
+    }
+    
+    // Compile options for performance
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    
+    // Additional performance configurations
+    dexOptions {
+        javaMaxHeapSize "4g"
+        preDexLibraries = false
     }
 }
 

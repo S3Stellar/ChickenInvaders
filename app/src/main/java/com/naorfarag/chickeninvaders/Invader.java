@@ -26,6 +26,12 @@ public class Invader {
     private TypedArray chickenImages;
     private Context context;
     private int xCoordinate;
+    
+    // Health and scoring
+    private int health;
+    private int maxHealth;
+    private int scoreValue;
+    private boolean isDestroyed;
 
     public Invader(Context context, int screenX, int screenY, int xCoordinate) {
         this.context = context;
@@ -37,6 +43,12 @@ public class Invader {
 
         speed = rand.nextInt(5) + 8;
         y = -bitmap.getHeight();
+        
+        // Initialize health and scoring
+        health = Finals.ENEMY_HEALTH;
+        maxHealth = Finals.ENEMY_HEALTH;
+        scoreValue = 10; // Base score value
+        isDestroyed = false;
 
         // Randomly show or not on lane
         raffleInvaderShow();
@@ -53,14 +65,12 @@ public class Invader {
     }
 
     public void update(int progressSpeed) {
+        if (isDestroyed) return;
+        
         y += progressSpeed;
         y += speed;
         if (y > maxY - bitmap.getHeight()) {
-            changeChickenImage();
-            speed = rand.nextInt(10) + 10;
-            y = 0;
-
-            raffleInvaderShow();
+            respawn();
         }
 
         // Adding the top, left, bottom and right to the rect object
@@ -111,4 +121,37 @@ public class Invader {
         else
             this.speed = speed;
     }
+    
+    // Damage and health methods
+    public void takeDamage(int damage) {
+        health -= damage;
+        if (health <= 0) {
+            destroy();
+        }
+    }
+    
+    public void destroy() {
+        isDestroyed = true;
+        x = Finals.OUT_OF_BOUNDS;
+        y = Finals.OUT_OF_BOUNDS;
+    }
+    
+    public void respawn() {
+        health = maxHealth;
+        isDestroyed = false;
+        changeChickenImage();
+        speed = rand.nextInt(10) + 10;
+        y = -bitmap.getHeight();
+        raffleInvaderShow();
+    }
+    
+    // Getters for new properties
+    public int getHealth() { return health; }
+    public int getMaxHealth() { return maxHealth; }
+    public int getScoreValue() { return scoreValue; }
+    public boolean isDestroyed() { return isDestroyed; }
+    
+    // Setters
+    public void setHealth(int health) { this.health = health; }
+    public void setScoreValue(int value) { this.scoreValue = value; }
 }
