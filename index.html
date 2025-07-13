@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iron Dome - Defend the City</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: white;
+        }
+        
+        .game-container {
+            text-align: center;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+        }
+        
+        canvas {
+            border: 2px solid #00ffff;
+            border-radius: 10px;
+            background: linear-gradient(to bottom, #001122, #003366);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+        }
+        
+        .ui {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .controls {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #aaa;
+        }
+        
+        .game-over {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 0, 0, 0.9);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            display: none;
+        }
+        
+        button {
+            background: #00ffff;
+            color: #001122;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            background: #00cccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="ui">
+            <div>Score: <span id="score">0</span></div>
+            <div>Lives: <span id="lives">3</span></div>
+            <div>Time: <span id="time">0</span>s</div>
+        </div>
+        
+        <canvas id="gameCanvas" width="800" height="600"></canvas>
+        
+        <div class="controls">
+            Move: Mouse | Fire: Left Click | Aim: Follow mouse cursor
+        </div>
+        
+        <div class="game-over" id="gameOver">
+            <h2>Game Over!</h2>
+            <p>Final Score: <span id="finalScore">0</span></p>
+            <button onclick="restartGame()">Play Again</button>
+        </div>
+    </div>
+
+    <script>
+        // Game variables
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        let gameState = {
+            score: 0,
+            lives: 3,
+            time: 0,
+            gameRunning: true,
+            mouseX: 400,
+            mouseY: 300
+        };
+        
+        let missiles = [];
+        let lasers = [];
+        let buildings = [];
+        let explosions = [];
+        let particles = [];
+        
+        // Iron Dome position (player)
+        const ironDome = {
+            x: 400,
+            y: 550,
+            width: 60,
+            height: 40
+        };
+        
+        // Initialize buildings
+        function initBuildings() {
+            buildings = [];
+            for (let i = 0; i < 15; i++) {
+                buildings.push({
+                    x: i * 55 + 10,
+                    y: 450 + Math.random() * 100,
+                    width: 40 + Math.random() * 30,
+                    height: 100 + Math.random() * 50,
+                    destroyed: false,
+                    color: `hsl(${200 + Math.random() * 60}, 70%, ${30 + Math.random() * 20}%)`
+                });
+            }
+        }
+        
+        // Missile class
+        class Missile {
+            constructor() {
+                this.x = Math.random() < 0.5 ? -50 : canvas.width + 50;
+                this.y = Math.random() * 100;
+                this.targetX = Math.random() * canvas.width;
+                this.targetY = 450 + Math.random() * 150;
+                this.speed = 1 + Math.random() * 2 + gameState.time * 0.02;
+                this.size = 8;
+                this.trail = [];
+                
+                // Calculate direction
+                const dx = this.targetX - this.x;
+                const dy = this.targetY - this.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                this.vx = (dx / distance) * this.speed;
+                this.vy = (dy / distance) * this.speed;
+            }
+            
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                
+                // Add to trail
+                this.trail.push({ x: this.x, y: this.y });
+                if (this.trail.length > 8) {
+                    this.trail.shift();
+                }
+                
+                // Check if hit ground or buildings
+                if (this.y >= this.targetY - 10) {
+                    this.explode();
+                    return false;
+                }
+                
+                return true;
+            }
+            
+            explode() {
+                // Create explosion
+                explosions.push({
+                    x: this.x,
+                    y: this.y,
+                    size: 0,
+                    maxSize: 50,
+                    life: 30
+                });
+                
+                // Create particles
+                for (let i = 0; i < 15; i++) {
+                    particles.push({
+                        x: this.x,
+                        y: this.y,
+                        vx: (Math.random() - 0.5) * 10,
+                        vy: (Math.random() - 0.5) * 10,
+                        life: 20,
+                        color: `hsl(${Math.random() * 60}, 100%, 70%)`
+                    });
+                }
+                
+                // Check building damage
+                buildings.forEach(building => {
+                    if (!building.destroyed && 
+                        this.x >= building.x && this.x <= building.x + building.width &&
+                        this.y >= building.y && this.y <= building.y + building.height) {
+                        building.destroyed = true;
+                        gameState.lives--;
+                    }
+                });
+            }
+            
+            draw() {
+                // Draw trail
+                ctx.strokeStyle = 'rgba(255, 100, 0, 0.8)';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                for (let i = 0; i < this.trail.length; i++) {
+                    const alpha = i / this.trail.length;
+                    if (i === 0) {
+                        ctx.moveTo(this.trail[i].x, this.trail[i].y);
+                    } else {
+                        ctx.lineTo(this.trail[i].x, this.trail[i].y);
+                    }
+                }
+                ctx.stroke();
+                
+                // Draw missile
+                ctx.fillStyle = '#ff4444';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Draw missile body
+                ctx.fillStyle = '#cc2222';
+                ctx.fillRect(this.x - 2, this.y - 6, 4, 12);
+            }
+        }
+        
+        // Laser class
+        class Laser {
+            constructor(startX, startY, targetX, targetY) {
+                this.startX = startX;
+                this.startY = startY;
+                this.targetX = targetX;
+                this.targetY = targetY;
+                this.life = 10;
+                this.speed = 15;
+                this.x = startX;
+                this.y = startY;
+                
+                const dx = targetX - startX;
+                const dy = targetY - startY;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                this.vx = (dx / distance) * this.speed;
+                this.vy = (dy / distance) * this.speed;
+            }
+            
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.life--;
+                
+                // Check collision with missiles
+                for (let i = missiles.length - 1; i >= 0; i--) {
+                    const missile = missiles[i];
+                    const dx = this.x - missile.x;
+                    const dy = this.y - missile.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < 15) {
+                        // Hit!
+                        missiles.splice(i, 1);
+                        gameState.score += 10;
+                        
+                        // Create hit explosion
+                        explosions.push({
+                            x: missile.x,
+                            y: missile.y,
+                            size: 0,
+                            maxSize: 30,
+                            life: 20,
+                            color: '#00ff00'
+                        });
+                        
+                        return false;
+                    }
+                }
+                
+                return this.life > 0 && this.x >= 0 && this.x <= canvas.width && this.y >= 0 && this.y <= canvas.height;
+            }
+            
+            draw() {
+                ctx.strokeStyle = '#00ffff';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(this.startX, this.startY);
+                ctx.lineTo(this.x, this.y);
+                ctx.stroke();
+                
+                // Laser glow
+                ctx.shadowColor = '#00ffff';
+                ctx.shadowBlur = 10;
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+                ctx.shadowBlur = 0;
+            }
+        }
+        
+        // Mouse events
+        canvas.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            gameState.mouseX = e.clientX - rect.left;
+            gameState.mouseY = e.clientY - rect.top;
+        });
+        
+        canvas.addEventListener('click', (e) => {
+            if (!gameState.gameRunning) return;
+            
+            const rect = canvas.getBoundingClientRect();
+            const targetX = e.clientX - rect.left;
+            const targetY = e.clientY - rect.top;
+            
+            lasers.push(new Laser(ironDome.x + ironDome.width / 2, ironDome.y, targetX, targetY));
+        });
+        
+        // Spawn missiles
+        function spawnMissile() {
+            const difficulty = Math.min(gameState.time / 10, 5);
+            const spawnRate = Math.max(0.02, 0.08 - difficulty * 0.01);
+            
+            if (Math.random() < spawnRate) {
+                missiles.push(new Missile());
+            }
+        }
+        
+        // Update game objects
+        function update() {
+            if (!gameState.gameRunning) return;
+            
+            gameState.time += 1/60;
+            
+            // Update missiles
+            missiles = missiles.filter(missile => missile.update());
+            
+            // Update lasers
+            lasers = lasers.filter(laser => laser.update());
+            
+            // Update explosions
+            explosions = explosions.filter(explosion => {
+                explosion.size = Math.min(explosion.size + 2, explosion.maxSize);
+                explosion.life--;
+                return explosion.life > 0;
+            });
+            
+            // Update particles
+            particles = particles.filter(particle => {
+                particle.x += particle.vx;
+                particle.y += particle.vy;
+                particle.vy += 0.3; // gravity
+                particle.life--;
+                return particle.life > 0;
+            });
+            
+            // Spawn missiles
+            spawnMissile();
+            
+            // Check game over
+            if (gameState.lives <= 0) {
+                gameState.gameRunning = false;
+                document.getElementById('gameOver').style.display = 'block';
+                document.getElementById('finalScore').textContent = gameState.score;
+            }
+            
+            // Update UI
+            document.getElementById('score').textContent = gameState.score;
+            document.getElementById('lives').textContent = gameState.lives;
+            document.getElementById('time').textContent = Math.floor(gameState.time);
+        }
+        
+        // Draw everything
+        function draw() {
+            // Clear canvas
+            ctx.fillStyle = 'rgba(0, 17, 34, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw stars
+            for (let i = 0; i < 50; i++) {
+                const x = (i * 137) % canvas.width;
+                const y = (i * 197) % 200;
+                ctx.fillStyle = `rgba(255, 255, 255, ${0.3 + Math.sin(gameState.time + i) * 0.2})`;
+                ctx.fillRect(x, y, 1, 1);
+            }
+            
+            // Draw buildings
+            buildings.forEach(building => {
+                if (!building.destroyed) {
+                    ctx.fillStyle = building.color;
+                    ctx.fillRect(building.x, building.y, building.width, building.height);
+                    
+                    // Building windows
+                    ctx.fillStyle = 'rgba(255, 255, 0, 0.8)';
+                    for (let i = 0; i < 3; i++) {
+                        for (let j = 0; j < 5; j++) {
+                            if (Math.random() > 0.7) {
+                                ctx.fillRect(
+                                    building.x + 5 + i * 10,
+                                    building.y + 10 + j * 15,
+                                    6, 8
+                                );
+                            }
+                        }
+                    }
+                } else {
+                    // Draw destroyed building
+                    ctx.fillStyle = '#333';
+                    ctx.fillRect(building.x, building.y + building.height * 0.7, building.width, building.height * 0.3);
+                }
+            });
+            
+            // Draw ground
+            ctx.fillStyle = '#2d4a2d';
+            ctx.fillRect(0, canvas.height - 50, canvas.width, 50);
+            
+            // Draw Iron Dome
+            ctx.fillStyle = '#00ff00';
+            ctx.fillRect(ironDome.x, ironDome.y, ironDome.width, ironDome.height);
+            
+            // Draw cannon
+            const dx = gameState.mouseX - (ironDome.x + ironDome.width / 2);
+            const dy = gameState.mouseY - ironDome.y;
+            const angle = Math.atan2(dy, dx);
+            
+            ctx.save();
+            ctx.translate(ironDome.x + ironDome.width / 2, ironDome.y + 10);
+            ctx.rotate(angle);
+            ctx.fillStyle = '#004400';
+            ctx.fillRect(0, -3, 30, 6);
+            ctx.restore();
+            
+            // Draw targeting line
+            ctx.strokeStyle = 'rgba(0, 255, 0, 0.3)';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            ctx.moveTo(ironDome.x + ironDome.width / 2, ironDome.y);
+            ctx.lineTo(gameState.mouseX, gameState.mouseY);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            
+            // Draw missiles
+            missiles.forEach(missile => missile.draw());
+            
+            // Draw lasers
+            lasers.forEach(laser => laser.draw());
+            
+            // Draw explosions
+            explosions.forEach(explosion => {
+                const alpha = explosion.life / 30;
+                ctx.fillStyle = explosion.color || `rgba(255, 100, 0, ${alpha})`;
+                ctx.beginPath();
+                ctx.arc(explosion.x, explosion.y, explosion.size, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            
+            // Draw particles
+            particles.forEach(particle => {
+                const alpha = particle.life / 20;
+                ctx.fillStyle = particle.color.replace('70%', `${70 * alpha}%`);
+                ctx.fillRect(particle.x, particle.y, 2, 2);
+            });
+        }
+        
+        // Game loop
+        function gameLoop() {
+            update();
+            draw();
+            requestAnimationFrame(gameLoop);
+        }
+        
+        // Restart game
+        function restartGame() {
+            gameState = {
+                score: 0,
+                lives: 3,
+                time: 0,
+                gameRunning: true,
+                mouseX: 400,
+                mouseY: 300
+            };
+            
+            missiles = [];
+            lasers = [];
+            explosions = [];
+            particles = [];
+            
+            initBuildings();
+            document.getElementById('gameOver').style.display = 'none';
+        }
+        
+        // Initialize game
+        initBuildings();
+        gameLoop();
+    </script>
+</body>
+</html>
